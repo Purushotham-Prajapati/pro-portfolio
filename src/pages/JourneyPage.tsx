@@ -10,7 +10,7 @@ export default function JourneyPage() {
             <div style={{
                 maxWidth: '1280px',
                 margin: '0 auto',
-                padding: 'clamp(48px, 7vw, 96px) 24px 64px',
+                padding: 'clamp(32px, 6vw, 96px) clamp(16px, 4vw, 24px) clamp(40px, 6vw, 64px)',
             }}>
                 <span style={{
                     fontSize: '11px', letterSpacing: '0.22em', textTransform: 'uppercase',
@@ -21,11 +21,11 @@ export default function JourneyPage() {
                 <h1 style={{
                     fontFamily: 'Archivo, sans-serif',
                     fontWeight: 800,
-                    fontSize: 'clamp(36px, 6vw, 72px)',
+                    fontSize: 'clamp(30px, 6vw, 72px)',
                     lineHeight: 1.05,
                     letterSpacing: '-0.03em',
                     color: '#FAFAFA',
-                    margin: '16px 0 20px',
+                    margin: '12px 0 16px',
                 }}>
                     33 Years of<br />
                     <span style={{
@@ -38,25 +38,25 @@ export default function JourneyPage() {
                     </span>
                 </h1>
                 <p style={{
-                    fontSize: '16px', color: '#71717A',
+                    fontSize: 'clamp(14px, 2.5vw, 16px)', color: '#71717A',
                     maxWidth: '480px', lineHeight: 1.75, margin: 0,
                 }}>
                     From a Diploma in Electronics in 1992 to leading dual DST-funded research projects in 2025 — every milestone tells a story of dedication, discovery, and impact.
                 </p>
 
                 {/* Quick stats row */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', marginTop: '48px' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', marginTop: '40px' }}>
                     {[
                         { label: 'Years Teaching', value: '18' },
-                        { label: 'Industry Experience', value: '3 yrs' },
+                        { label: 'Industry Exp.', value: '3 yrs' },
                         { label: 'Research Active', value: '13 yrs' },
-                        { label: 'PhD Scholars Guided', value: '8+' },
+                        { label: 'PhD Scholars', value: '8+' },
                     ].map(({ label, value }) => (
-                        <div key={label} style={{ borderLeft: '2px solid #27272A', paddingLeft: '16px' }}>
-                            <div style={{ fontFamily: 'Archivo, sans-serif', fontSize: '28px', fontWeight: 800, color: '#FAFAFA', lineHeight: 1 }}>
+                        <div key={label} style={{ borderLeft: '2px solid #27272A', paddingLeft: '14px' }}>
+                            <div style={{ fontFamily: 'Archivo, sans-serif', fontSize: 'clamp(18px, 3.5vw, 28px)', fontWeight: 800, color: '#FAFAFA', lineHeight: 1 }}>
                                 {value}
                             </div>
-                            <div style={{ fontSize: '12px', color: '#52525B', marginTop: '4px', letterSpacing: '0.04em' }}>{label}</div>
+                            <div style={{ fontSize: '11px', color: '#52525B', marginTop: '4px', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>{label}</div>
                         </div>
                     ))}
                 </div>

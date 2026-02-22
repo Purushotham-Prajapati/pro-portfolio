@@ -35,7 +35,7 @@ export default function AboutSection() {
                     className="stagger-children"
                     style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
                         gap: '1px',
                         backgroundColor: '#E4E4E7',
                         border: '1px solid #E4E4E7',
