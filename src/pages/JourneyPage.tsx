@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import AceternityTimeline from '../components/AceternityTimeline'
+import TimelineSection from '../components/TimelineSection'
 
 export default function JourneyPage() {
     useEffect(() => { window.scrollTo(0, 0) }, [])
@@ -63,9 +63,7 @@ export default function JourneyPage() {
             </div>
 
             {/* Timeline */}
-            <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 24px clamp(60px, 8vw, 120px)' }}>
-                <AceternityTimeline />
-            </div>
+            <TimelineSection />
         </div>
     )
 }
