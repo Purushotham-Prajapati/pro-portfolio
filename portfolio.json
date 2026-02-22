@@ -1,0 +1,171 @@
+{
+  "personal_info": {
+    "name": "Dr. M. Madhu Bala",
+    "designation": "Professor of Computer Science and Engineering",
+    "experience_summary": {
+      "total_years": 21,
+      "teaching": 18,
+      "industry": 3,
+      "research": 13
+    },
+    "ratification": [
+      {
+        "designation": "Professor",
+        "university": "JNTUH",
+        "date": "13 May 2022"
+      },
+      {
+        "designation": "Associate Professor",
+        "university": "JNTUH",
+        "date": "08 February 2017"
+      },
+      {
+        "designation": "Assistant Professor",
+        "university": "JNTUH",
+        "date": "02 February 2012"
+      }
+    ],
+    "orcid": "0000-0003-4734-5914",
+    "scopus": {
+      "documents": 48,
+      "citations": 471,
+      "h_index": 10,
+      "link": "https://www.scopus.com/authid/detail.uri?authorId=57192681614"
+    },
+    "google_scholar": {
+      "documents": 100,
+      "citations": 780,
+      "h_index": 14,
+      "i10_index": 18,
+      "link": "https://scholar.google.com/citations?user=4R81YuIAAAAJ&hl=en"
+    }
+  },
+  "education": [
+    {
+      "degree": "Ph.D.",
+      "specialization": "Computer Science Engineering",
+      "university": "Jawaharlal Nehru Technological University Hyderabad",
+      "year": 2015,
+      "thesis": "Study of Image Identification and Optimistic Feature Extraction for Image Mining"
+    },
+    {
+      "degree": "MBA",
+      "specialization": "HR",
+      "university": "Sikkim Manipal University",
+      "year": 2012
+    },
+    {
+      "degree": "M.Tech",
+      "specialization": "Computer Science",
+      "university": "Sri Vidya Niketan Engineering College",
+      "year": 2006
+    },
+    {
+      "degree": "B.Tech",
+      "specialization": "Electronics and Communication Engineering",
+      "university": "JNTU College of Engineering, Kakinada",
+      "year": 1998
+    },
+    {
+      "degree": "Diploma (DECE)",
+      "specialization": "Electronics and Communication Engineering",
+      "institution": "Government Polytechnic for Women, Guntur",
+      "year": 1992
+    }
+  ],
+  "research_interests": [
+    "Machine Learning",
+    "Image Mining",
+    "Computer Vision",
+    "Data Science",
+    "Federated Learning",
+    "Artificial Intelligence",
+    "Healthcare Analytics",
+    "Social Media Mining"
+  ],
+  "technical_skills": {
+    "programming": ["Python", "R"],
+    "tools": ["Weka", "SPSS", "Oracle 11g"],
+    "ml_libraries": [
+      "NumPy",
+      "Pandas",
+      "Matplotlib",
+      "Scipy",
+      "Keras",
+      "TensorFlow"
+    ],
+    "expertise": [
+      "Data Modeling",
+      "Predictive Analytics",
+      "Dimensionality Reduction",
+      "Image Processing",
+      "Big Data Analytics"
+    ]
+  },
+  "publications": {
+    "total_papers": 100,
+    "patents": 8,
+    "copyrights": 2,
+    "books_authored": 3
+  },
+  "major_research_projects": [
+    {
+      "title": "Development of Smart Vision Eyewear Assistive Device",
+      "role": "Principal Investigator",
+      "funding_agency": "DST",
+      "amount_lakhs": 41.12,
+      "year": 2025
+    },
+    {
+      "title": "Tech Mining: Anticipating Innovation Pathways for Smart Cities",
+      "role": "Principal Investigator",
+      "funding_agency": "DST",
+      "amount_lakhs": 25.64,
+      "year": 2018
+    },
+    {
+      "title": "M-Pilot: Smart Living Companion with IoT-enabled AI Agent",
+      "role": "Principal Investigator",
+      "funding_agency": "ANRF-PAIR",
+      "amount_lakhs": 38.87,
+      "year": 2025
+    }
+  ],
+  "awards": [
+    "Best Teacher Award (2010)",
+    "Sarvothama Acharya Puraskar (2019)",
+    "IWN Unsung Hero (2019-20)",
+    "Best Women Dean of the Year (2022)",
+    "Women Leadership Award (2023)",
+    "Master Educator in Academic Leadership Award (2024)",
+    "Exceptional Researcher Award (2021)"
+  ],
+  "professional_memberships": [
+    {
+      "organization": "IEEE",
+      "membership_id": "96417786"
+    },
+    {
+      "organization": "Computer Society of India (CSI)"
+    }
+  ],
+  "administrative_roles": [
+    "Head of Department (CSE)",
+    "Dean - Research & Development",
+    "Dean - Computational Studies",
+    "BOS Chairman (UG & PG - CSE)",
+    "SPOC - Smart India Hackathon"
+  ],
+  "subjects_handled": [
+    "Database Management Systems",
+    "Machine Learning",
+    "Artificial Intelligence",
+    "Image Processing",
+    "Data Warehousing",
+    "Big Data Analytics",
+    "Python Programming",
+    "R Programming",
+    "Computer Networks",
+    "Information Security"
+  ]
+}
