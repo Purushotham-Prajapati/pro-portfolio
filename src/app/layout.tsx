@@ -1,14 +1,56 @@
 import './globals.css'
 import NavbarWrapper from '../components/NavbarWrapper'
 
-export const metadata = {
+import type { Metadata, Viewport } from 'next'
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+}
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://madhubala.in'),
   title: 'Dr. M. Madhu Bala | Professor of Computer Science & Engineering',
-  description: 'Professor Dr. M. Madhu Bala – 21 years of excellence in Computer Science, Machine Learning, Image Mining and AI research. JNTUH-ratified Professor, Principal Investigator for DST projects funded at ₹1Cr+.',
-  keywords: 'Dr Madhu Bala, Professor CSE, Machine Learning, Image Mining, Computer Vision, JNTUH, DST research',
+  description: 'Professor Dr. M. Madhu Bala – 21+ years of academic excellence in Computer Science, Machine Learning, Image Mining, and AI research. JNTUH-ratified Professor, IEEE Member, and Principal Investigator for DST projects.',
+  keywords: 'Dr Madhu Bala, Professor CSE, Machine Learning, Image Mining, Computer Vision, Artificial Intelligence, JNTUH, DST research, Data Science, Federated Learning',
+  authors: [{ name: 'Dr. M. Madhu Bala' }],
+  creator: 'Dr. M. Madhu Bala',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
-    title: 'Dr. M. Madhu Bala | Professor of Computer Science',
-    description: '21 years of academic excellence. 100+ publications, 8 patents, 780+ citations.',
     type: 'website',
+    locale: 'en_IN',
+    url: 'https://madhubala.in', // Replace with actual URL if known
+    title: 'Dr. M. Madhu Bala | Professor of Computer Science & Engineering',
+    description: 'Explore the academic journey, research publications, patents, and teaching experience of Dr. M. Madhu Bala. 21+ years of excellence in CSE.',
+    siteName: 'Dr. M. Madhu Bala Portfolio',
+    images: [
+      {
+        url: '/og-image.jpg', // Ensure you have an og-image.jpg in the public folder if possible
+        width: 1200,
+        height: 630,
+        alt: 'Dr. M. Madhu Bala - Professor of CSE',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Dr. M. Madhu Bala | Professor of Computer Science & Engineering',
+    description: 'Professor Dr. M. Madhu Bala – 21+ years of academic excellence in Computer Science, Machine Learning, Image Mining, and AI research.',
+    creator: '@madhubala', // Replace if known
+  },
+  alternates: {
+    canonical: 'https://madhubala.in', // Replace with actual URL
   }
 }
 

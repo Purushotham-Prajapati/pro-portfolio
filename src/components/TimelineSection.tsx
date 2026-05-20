@@ -161,7 +161,7 @@ export default function TimelineSection({ data }: { data: any }) {
     }
 
     return (
-        <section id="journey" style={{ backgroundColor: '#09090B', padding: 'clamp(60px, 8vw, 120px) clamp(16px, 4vw, 24px)' }}>
+        <section id="journey" style={{ backgroundColor: '#09090B', padding: 'clamp(100px, 12vw, 140px) clamp(16px, 4vw, 24px) clamp(60px, 8vw, 120px)' }}>
             <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
 
                 {/* Header */}

@@ -65,6 +65,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
                 position: 'relative',
                 overflow: 'hidden',
                 paddingTop: '80px',
+                paddingBottom: '100px',
             }}
         >
             {/* Grid bg */}

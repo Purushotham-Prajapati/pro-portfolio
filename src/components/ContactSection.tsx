@@ -56,7 +56,7 @@ export default function ContactSection({ data }: ContactSectionProps) {
     };
 
     return (
-        <section id="contact" style={{ backgroundColor: '#09090B', padding: 'clamp(48px, 6vw, 96px) 24px' }}>
+        <section id="contact" style={{ backgroundColor: '#09090B', padding: 'clamp(100px, 12vw, 140px) 24px clamp(48px, 6vw, 96px)' }}>
             <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                 
                 {/* Contact Page Header */}

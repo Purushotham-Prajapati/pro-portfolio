@@ -54,7 +54,7 @@ export default function ResearchSection({ data }: ResearchSectionProps) {
     };
 
     return (
-        <section style={{ backgroundColor: '#FAFAFA', color: '#09090B', padding: 'clamp(48px, 6vw, 96px) 24px' }}>
+        <section style={{ backgroundColor: '#FAFAFA', color: '#09090B', padding: 'clamp(100px, 12vw, 140px) 24px clamp(48px, 6vw, 96px)' }}>
             <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
                 {/* Header */}
