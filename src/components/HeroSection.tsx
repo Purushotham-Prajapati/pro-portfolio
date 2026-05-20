@@ -1,6 +1,6 @@
+"use client";
 import { useEffect, useRef, useState } from 'react'
 import { useCountUp } from '../hooks/useCountUp'
-import { personalInfo, publications } from '../data/portfolio'
 import { ChevronDown } from 'lucide-react'
 
 function StatCard({ value, suffix, label }: { value: number; suffix?: string; label: string }) {
@@ -27,7 +27,21 @@ function StatCard({ value, suffix, label }: { value: number; suffix?: string; la
     )
 }
 
-export default function HeroSection() {
+interface HeroSectionProps {
+    data: {
+        personal_info: {
+            name: string;
+            designation: string;
+            experience_summary: { total_years: number };
+            google_scholar: { citations: number; link: string };
+            scopus: { link: string };
+            orcid: string;
+        };
+        publications: { total_papers: number; patents: number };
+    };
+}
+
+export default function HeroSection({ data }: HeroSectionProps) {
     const titleRef = useRef<HTMLHeadingElement>(null)
     const [visible, setVisible] = useState(false)
 
@@ -36,7 +50,8 @@ export default function HeroSection() {
         return () => clearTimeout(t)
     }, [])
 
-    const nameParts = personalInfo.name.split(' ')
+    const { personal_info, publications } = data;
+    const nameParts = personal_info.name.split(' ')
 
     return (
         <section
@@ -73,18 +88,14 @@ export default function HeroSection() {
             <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', width: '100%', position: 'relative' }}>
 
                 {/* Eyebrow */}
-                <div
-                    style={{
-                        display: 'inline-flex', alignItems: 'center', gap: '10px',
-                        marginBottom: '32px',
-                        opacity: visible ? 1 : 0,
-                        transform: visible ? 'none' : 'translateY(20px)',
-                        transition: 'all 0.7s ease 0.1s',
-                    }}
-                >
-                    <span style={{
-                        width: '40px', height: '1px', background: '#2563EB', display: 'block',
-                    }} />
+                <div style={{
+                    display: 'inline-flex', alignItems: 'center', gap: '10px',
+                    marginBottom: '32px',
+                    opacity: visible ? 1 : 0,
+                    transform: visible ? 'none' : 'translateY(20px)',
+                    transition: 'all 0.7s ease 0.1s',
+                }}>
+                    <span style={{ width: '40px', height: '1px', background: '#2563EB', display: 'block' }} />
                     <span style={{
                         fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase',
                         color: '#2563EB', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif',
@@ -94,29 +105,18 @@ export default function HeroSection() {
                 </div>
 
                 {/* Name */}
-                <h1
-                    ref={titleRef}
-                    style={{
-                        fontFamily: 'Archivo, sans-serif',
-                        fontWeight: 900,
-                        lineHeight: 0.9,
-                        letterSpacing: '-0.03em',
-                        color: '#FAFAFA',
-                        fontSize: 'clamp(52px, 8vw, 110px)',
-                        margin: 0,
-                        marginBottom: '8px',
-                    }}
-                >
+                <h1 ref={titleRef} style={{
+                    fontFamily: 'Archivo, sans-serif', fontWeight: 900, lineHeight: 0.9,
+                    letterSpacing: '-0.03em', color: '#FAFAFA',
+                    fontSize: 'clamp(52px, 8vw, 110px)', margin: 0, marginBottom: '8px',
+                }}>
                     {nameParts.map((part, i) => (
-                        <span
-                            key={i}
-                            style={{
-                                display: 'block',
-                                opacity: visible ? 1 : 0,
-                                transform: visible ? 'none' : 'translateY(40px)',
-                                transition: `all 0.8s cubic-bezier(0.25,0.46,0.45,0.94) ${0.2 + i * 0.1}s`,
-                            }}
-                        >
+                        <span key={i} style={{
+                            display: 'block',
+                            opacity: visible ? 1 : 0,
+                            transform: visible ? 'none' : 'translateY(40px)',
+                            transition: `all 0.8s cubic-bezier(0.25,0.46,0.45,0.94) ${0.2 + i * 0.1}s`,
+                        }}>
                             {i === nameParts.length - 1 ? (
                                 <span style={{ color: '#2563EB' }}>{part}</span>
                             ) : part}
@@ -125,22 +125,15 @@ export default function HeroSection() {
                 </h1>
 
                 {/* Designation */}
-                <p
-                    style={{
-                        fontFamily: 'Space Grotesk, sans-serif',
-                        fontSize: 'clamp(14px, 2vw, 18px)',
-                        color: '#71717A',
-                        fontWeight: 400,
-                        marginTop: '24px',
-                        marginBottom: '0',
-                        maxWidth: '480px',
-                        lineHeight: 1.6,
-                        opacity: visible ? 1 : 0,
-                        transform: visible ? 'none' : 'translateY(20px)',
-                        transition: 'all 0.7s ease 0.6s',
-                    }}
-                >
-                    {personalInfo.designation}
+                <p style={{
+                    fontFamily: 'Space Grotesk, sans-serif',
+                    fontSize: 'clamp(14px, 2vw, 18px)', color: '#71717A', fontWeight: 400,
+                    marginTop: '24px', marginBottom: '0', maxWidth: '480px', lineHeight: 1.6,
+                    opacity: visible ? 1 : 0,
+                    transform: visible ? 'none' : 'translateY(20px)',
+                    transition: 'all 0.7s ease 0.6s',
+                }}>
+                    {personal_info.designation}
                     <br />
                     <span style={{ color: '#52525B', fontSize: '0.9em' }}>
                         JNTUH-Ratified · IEEE Member
@@ -148,38 +141,30 @@ export default function HeroSection() {
                 </p>
 
                 {/* Stats */}
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
-                        gap: '24px',
-                        maxWidth: '640px',
-                        marginTop: '64px',
-                        paddingTop: '40px',
-                        borderTop: '1px solid #27272A',
-                        opacity: visible ? 1 : 0,
-                        transition: 'opacity 0.7s ease 0.8s',
-                    }}
-                >
-                    <StatCard value={personalInfo.experience.total} suffix="+" label="Years Experience" />
-                    <StatCard value={publications.totalPapers} suffix="+" label="Publications" />
+                <div style={{
+                    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                    gap: '24px', maxWidth: '640px', marginTop: '64px', paddingTop: '40px',
+                    borderTop: '1px solid #27272A',
+                    opacity: visible ? 1 : 0,
+                    transition: 'opacity 0.7s ease 0.8s',
+                }}>
+                    <StatCard value={personal_info.experience_summary.total_years} suffix="+" label="Years Experience" />
+                    <StatCard value={publications.total_papers} suffix="+" label="Publications" />
                     <StatCard value={publications.patents} label="Patents" />
-                    <StatCard value={personalInfo.googleScholar.citations} suffix="+" label="Citations" />
+                    <StatCard value={personal_info.google_scholar.citations} suffix="+" label="Citations" />
                 </div>
             </div>
 
             {/* Scroll indicator */}
-            <div
-                style={{
-                    position: 'absolute', bottom: '32px', left: '50%',
-                    transform: 'translateX(-50%)',
-                    display: 'flex', flexDirection: 'column',
-                    alignItems: 'center', gap: '6px',
-                    opacity: visible ? 1 : 0,
-                    transition: 'opacity 0.7s ease 1.2s',
-                    animation: 'bounce 2s ease-in-out infinite',
-                }}
-            >
+            <div style={{
+                position: 'absolute', bottom: '32px', left: '50%',
+                transform: 'translateX(-50%)',
+                display: 'flex', flexDirection: 'column',
+                alignItems: 'center', gap: '6px',
+                opacity: visible ? 1 : 0,
+                transition: 'opacity 0.7s ease 1.2s',
+                animation: 'bounce 2s ease-in-out infinite',
+            }}>
                 <span style={{ fontSize: '10px', color: '#52525B', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Scroll</span>
                 <ChevronDown size={16} color="#52525B" />
             </div>
@@ -188,9 +173,6 @@ export default function HeroSection() {
         @keyframes bounce {
           0%,100% { transform: translateX(-50%) translateY(0); }
           50% { transform: translateX(-50%) translateY(6px); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          * { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
         }
       `}</style>
         </section>

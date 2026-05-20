@@ -12,7 +12,7 @@ const typeConfig: Record<TimelineEvent['type'], { color: string; label: string; 
     career: { color: '#3B82F6', label: 'Career', bg: '#3B82F615' },
     award: { color: '#F59E0B', label: 'Award', bg: '#F59E0B15' },
     research: { color: '#EF4444', label: 'Research', bg: '#EF444415' },
-    milestone: { color: '#A78BFA', label: 'Milestone', bg: '#A78BFA15' },
+    milestone: { color: '#14B8A6', label: 'Milestone', bg: '#14B8A615' },
 }
 
 function TimelineItem({ event, index }: { event: TimelineEvent; index: number }) {

@@ -1,12 +1,20 @@
+"use client";
 import { useEffect, useRef } from 'react'
-import { timelineEvents, TimelineEvent } from '../data/portfolio'
+
+export interface TimelineEvent {
+    year: number;
+    title: string;
+    subtitle: string;
+    description: string;
+    type: "education" | "career" | "award" | "research" | "milestone";
+}
 
 const typeConfig: Record<TimelineEvent['type'], { color: string; label: string }> = {
     education: { color: '#059669', label: 'Education' },
     career: { color: '#2563EB', label: 'Career' },
     award: { color: '#D97706', label: 'Award' },
     research: { color: '#DC2626', label: 'Research' },
-    milestone: { color: '#7C3AED', label: 'Milestone' },
+    milestone: { color: '#0D9488', label: 'Milestone' },
 }
 
 const observe = (el: HTMLDivElement | null, cls: string) => {
@@ -133,31 +141,94 @@ function TimelineCardContent({ event, color, label, align }: {
     )
 }
 
-export default function TimelineSection() {
+export default function TimelineSection({ data }: { data: any }) {
     const headerRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => { return observe(headerRef.current, 'visible') }, [])
+
+    const events = data?.timeline_events || []
+    const intro = data?.journey_intro || {
+        badge: "THE JOURNEY",
+        title_line_1: "33 Years of",
+        title_line_2: "Relentless Growth",
+        description: "From a Diploma in Electronics in 1992 to leading dual DST-funded research projects in 2025 — every milestone tells a story of dedication, discovery, and impact.",
+        stats: [
+            { value: "18", label: "Years Teaching" },
+            { value: "3 yrs", label: "Industry Exp." },
+            { value: "13 yrs", label: "Research Active" },
+            { value: "8+", label: "PhD Scholars" }
+        ]
+    }
 
     return (
         <section id="journey" style={{ backgroundColor: '#09090B', padding: 'clamp(60px, 8vw, 120px) clamp(16px, 4vw, 24px)' }}>
             <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
 
                 {/* Header */}
-                <div ref={headerRef} className="reveal" style={{ textAlign: 'center', marginBottom: '80px' }}>
-                    <span style={{ fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#2563EB', fontWeight: 600 }}>
-                        — The Journey
+                <div ref={headerRef} className="reveal" style={{ textAlign: 'left', marginBottom: '80px' }}>
+                    <span style={{ fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif' }}>
+                        — {intro.badge || 'THE JOURNEY'}
                     </span>
                     <h2 style={{
                         fontFamily: 'Archivo, sans-serif', fontWeight: 800,
                         fontSize: 'clamp(32px, 5vw, 56px)', lineHeight: 1.1,
                         letterSpacing: '-0.02em', color: '#FAFAFA', margin: '12px 0 16px',
                     }}>
-                        33 Years of<br />
-                        <span style={{ color: '#2563EB' }}>Relentless Growth</span>
+                        {intro.title_line_1 || '33 Years of'}<br />
+                        <span style={{
+                            background: 'linear-gradient(135deg, #3B82F6 0%, #10B981 100%)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            display: 'inline-block'
+                        }}>{intro.title_line_2 || 'Relentless Growth'}</span>
                     </h2>
-                    <p style={{ fontSize: '15px', color: '#71717A', maxWidth: '420px', margin: '0 auto', lineHeight: 1.7 }}>
-                        From a Diploma in 1992 to twin DST-funded research projects in 2025 — every milestone tells a story.
+                    <p style={{ fontSize: '15px', color: '#71717A', maxWidth: '680px', margin: '0 0 32px 0', lineHeight: 1.7 }}>
+                        {intro.description || 'From a Diploma in 1992 to twin DST-funded research projects in 2025 — every milestone tells a story.'}
                     </p>
+
+                    {/* Stats Row */}
+                    {intro.stats && intro.stats.length > 0 && (
+                        <div style={{
+                            display: 'flex',
+                            gap: '32px',
+                            alignItems: 'center',
+                            flexWrap: 'wrap',
+                            borderTop: '1px solid #27272A',
+                            paddingTop: '32px'
+                        }}>
+                            {intro.stats.map((stat: any, i: number) => (
+                                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <span style={{
+                                            fontFamily: 'Archivo, sans-serif',
+                                            fontSize: '28px',
+                                            fontWeight: 800,
+                                            color: '#FAFAFA',
+                                            lineHeight: 1
+                                        }}>
+                                            {stat.value}
+                                        </span>
+                                        <span style={{
+                                            fontSize: '12px',
+                                            color: '#71717A',
+                                            marginTop: '6px',
+                                            fontWeight: 500
+                                        }}>
+                                            {stat.label}
+                                        </span>
+                                    </div>
+                                    {i < intro.stats.length - 1 && (
+                                        <div style={{
+                                            width: '1px',
+                                            height: '36px',
+                                            backgroundColor: '#27272A',
+                                            display: 'block'
+                                        }} className="stats-divider" />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
 
                 {/* Timeline wrapper */}
@@ -178,7 +249,7 @@ export default function TimelineSection() {
                         zIndex: 1,
                     }} />
 
-                    {timelineEvents.map((event, index) => (
+                    {(events || []).map((event: TimelineEvent, index: number) => (
                         <TimelineCard key={event.year + event.title} event={event} index={index} />
                     ))}
                 </div>
