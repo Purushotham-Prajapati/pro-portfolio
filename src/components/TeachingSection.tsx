@@ -17,6 +17,7 @@ interface TeachingSectionProps {
             title_line_1: string;
             title_line_2: string;
         };
+        layout_config?: Array<{ key: string; visible: boolean; order: number }>;
     };
 }
 
@@ -35,6 +36,8 @@ export default function TeachingSection({ data }: TeachingSectionProps) {
     }, [])
 
     const { subjects_handled, administrative_roles, professional_memberships } = data;
+    const visibleLayout = new Set((data.layout_config || []).filter((item) => item.visible !== false).map((item) => item.key));
+    const shouldShow = (key: string) => visibleLayout.size === 0 || visibleLayout.has(key);
     const intro = data.teaching_intro || {
         badge: "TEACHING & LEADERSHIP",
         title_line_1: `${data.personal_info?.experience_summary?.teaching || 18} Years of`,
@@ -42,7 +45,7 @@ export default function TeachingSection({ data }: TeachingSectionProps) {
     };
 
     return (
-        <section style={{ backgroundColor: '#F4F4F5', color: '#09090B', padding: 'clamp(100px, 12vw, 140px) 24px clamp(48px, 6vw, 96px)' }}>
+        <section className="theme-page page-theme-teaching" style={{ color: 'hsl(var(--app-text))', padding: 'clamp(100px, 12vw, 140px) 24px clamp(48px, 6vw, 96px)' }}>
             <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
                 
                 {/* Dynamic Intro Header */}
@@ -53,13 +56,13 @@ export default function TeachingSection({ data }: TeachingSectionProps) {
                         fontWeight: 600,
                         letterSpacing: '0.12em',
                         textTransform: 'uppercase',
-                        color: '#2563EB',
+                        color: 'hsl(var(--theme-accent))',
                         marginBottom: '16px',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '8px'
                     }}>
-                        <span style={{ width: '12px', height: '1px', backgroundColor: '#2563EB' }} />
+                        <span style={{ width: '12px', height: '1px', backgroundColor: 'hsl(var(--theme-accent))' }} />
                         {intro.badge}
                     </div>
                     <h2 style={{
@@ -73,15 +76,15 @@ export default function TeachingSection({ data }: TeachingSectionProps) {
                     }}>
                         {intro.title_line_1}
                         <br />
-                        <span style={{ color: '#2563EB' }}>{intro.title_line_2}</span>
+                        <span style={{ color: 'hsl(var(--theme-accent))' }}>{intro.title_line_2}</span>
                     </h2>
                 </div>
 
-                <div ref={contentRef} className="stagger-children" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+                {shouldShow('teaching.core') && <div ref={contentRef} className="stagger-children" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
                     {/* Subjects */}
                     <div style={{ backgroundColor: '#FAFAFA', border: '1px solid #E4E4E7', padding: '32px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
-                            <Users size={18} color="#2563EB" />
+                            <Users size={18} color="hsl(var(--theme-accent))" />
                             <span style={{ fontFamily: 'Archivo, sans-serif', fontWeight: 700, fontSize: '15px' }}>Subjects Taught</span>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -89,7 +92,7 @@ export default function TeachingSection({ data }: TeachingSectionProps) {
                                 <div key={subject} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', backgroundColor: '#F4F4F5', border: '1px solid #E4E4E7', transition: 'all 0.15s ease', cursor: 'default' }}
                                     onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#09090B'; e.currentTarget.style.borderColor = '#09090B'; (e.currentTarget.querySelector('.subj-text') as HTMLElement).style.color = '#FAFAFA' }}
                                     onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#F4F4F5'; e.currentTarget.style.borderColor = '#E4E4E7'; (e.currentTarget.querySelector('.subj-text') as HTMLElement).style.color = '#3F3F46' }}>
-                                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#2563EB', fontFamily: 'Archivo, sans-serif', minWidth: '20px' }}>{String(i + 1).padStart(2, '0')}</span>
+                                    <span style={{ fontSize: '11px', fontWeight: 700, color: 'hsl(var(--theme-accent))', fontFamily: 'Archivo, sans-serif', minWidth: '20px' }}>{String(i + 1).padStart(2, '0')}</span>
                                     <span className="subj-text" style={{ fontSize: '13px', fontWeight: 500, color: '#3F3F46', transition: 'color 0.15s ease' }}>{subject}</span>
                                 </div>
                             ))}
@@ -129,7 +132,7 @@ export default function TeachingSection({ data }: TeachingSectionProps) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>}
             </div>
         </section>
     )

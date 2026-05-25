@@ -33,3 +33,5 @@ next-env.d.ts
 .gemini
 .openai
 .google-ai-studio
+task.md
+plan.md

@@ -4,9 +4,9 @@ import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard, User, BookOpen, Clock, FlaskConical,
     Trophy, GraduationCap, Mail, Navigation, ImageIcon, Settings,
-    LogOut, ChevronRight, Eye
+    LogOut, ChevronRight, Eye, PanelTop
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const navSections = [
     { group: 'Overview', items: [
@@ -23,6 +23,7 @@ const navSections = [
     ]},
     { group: 'Site', items: [
         { label: 'Navigation', href: '/admin/dashboard/navigation', icon: Navigation },
+        { label: 'Layout', href: '/admin/dashboard/layout', icon: PanelTop },
         { label: 'Media', href: '/admin/dashboard/media', icon: ImageIcon },
         { label: 'Settings', href: '/admin/dashboard/settings', icon: Settings },
     ]},
@@ -32,6 +33,13 @@ export default function AdminSidebar() {
     const pathname = usePathname();
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewKey, setPreviewKey] = useState(0);
+    const [origin, setOrigin] = useState("http://localhost:3000");
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            setOrigin(window.location.origin);
+        }
+    }, []);
 
     const handleLogout = async () => {
         await fetch('/api/auth/logout', { method: 'POST' });
@@ -62,8 +70,8 @@ export default function AdminSidebar() {
                 {/* Logo */}
                 <div style={{ padding: '20px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <div style={{ width: '32px', height: '32px', background: '#2563EB', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 800, color: '#fff', borderRadius: '6px' }}>
-                            MB
+                        <div style={{ width: '32px', height: '32px', background: '#C2410C', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 800, color: '#fff', borderRadius: '6px' }}>
+                             MB
                         </div>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 700, color: '#FAFAFA' }}>Dr. M. Madhu Bala</div>
@@ -92,7 +100,7 @@ export default function AdminSidebar() {
                                             background: active ? 'rgba(255,255,255,0.08)' : 'transparent',
                                             transition: 'all 0.15s',
                                         }}>
-                                            <Icon size={15} color={active ? '#60A5FA' : '#52525B'} />
+                                            <Icon size={15} color={active ? '#F59E0B' : '#52525B'} />
                                             {item.label}
                                             {active && <ChevronRight size={12} style={{ marginLeft: 'auto', color: '#52525B' }} />}
                                         </Link>
@@ -107,7 +115,7 @@ export default function AdminSidebar() {
                 <div style={{ padding: '12px 8px', borderTop: '1px solid rgba(255,255,255,0.06)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                     <button
                         onClick={() => { setPreviewKey(k => k + 1); setPreviewOpen(true); }}
-                        style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', borderRadius: '6px', border: 'none', background: 'rgba(37,99,235,0.12)', color: '#60A5FA', cursor: 'pointer', fontSize: '13px', fontWeight: 500, width: '100%' }}>
+                        style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', borderRadius: '6px', border: 'none', background: 'rgba(245,158,11,0.12)', color: '#FCD34D', cursor: 'pointer', fontSize: '13px', fontWeight: 500, width: '100%' }}>
                         <Eye size={15} />
                         Live Preview
                     </button>
@@ -129,10 +137,10 @@ export default function AdminSidebar() {
                     borderLeft: '1px solid rgba(255,255,255,0.1)',
                     display: 'flex', flexDirection: 'column', boxShadow: '-8px 0 40px rgba(0,0,0,0.5)',
                 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(24,24,27,0.9)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)', background: 'rgba(24,24,27,0.9)', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Eye size={14} color="#60A5FA" />
-                            <span style={{ fontSize: '12px', color: '#A1A1AA', fontFamily: 'monospace' }}>localhost:3000{previewUrl}</span>
+                            <Eye size={14} color="#F59E0B" />
+                            <span style={{ fontSize: '12px', color: '#A1A1AA', fontFamily: 'monospace' }}>{origin.replace(/^https?:\/\//, '')}{previewUrl}</span>
                         </div>
                         <div style={{ display: 'flex', gap: '8px' }}>
                             <button onClick={() => setPreviewKey(k => k + 1)}
@@ -145,7 +153,7 @@ export default function AdminSidebar() {
                             </button>
                         </div>
                     </div>
-                    <iframe key={previewKey} src={`http://localhost:3000${previewUrl}`} style={{ flex: 1, border: 'none', width: '100%' }} title="Live Preview" />
+                    <iframe key={previewKey} src={`${origin}${previewUrl}`} style={{ flex: 1, border: 'none', width: '100%' }} title="Live Preview" />
                 </div>
             )}
         </>

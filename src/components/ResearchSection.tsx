@@ -24,6 +24,7 @@ interface ResearchSectionProps {
             orcid: string;
         };
         research_intro?: { badge: string; title_line_1: string; title_line_2: string };
+        layout_config?: Array<{ key: string; visible: boolean; order: number }>;
     };
 }
 
@@ -47,6 +48,8 @@ export default function ResearchSection({ data }: ResearchSectionProps) {
     }, [])
 
     const { publications, major_research_projects, personal_info, research_intro } = data;
+    const visibleLayout = new Set((data.layout_config || []).filter((item) => item.visible !== false).map((item) => item.key));
+    const shouldShow = (key: string) => visibleLayout.size === 0 || visibleLayout.has(key);
     const intro = research_intro || {
         badge: "RESEARCH & PUBLICATIONS",
         title_line_1: "A Decade of",
@@ -54,12 +57,12 @@ export default function ResearchSection({ data }: ResearchSectionProps) {
     };
 
     return (
-        <section style={{ backgroundColor: '#FAFAFA', color: '#09090B', padding: 'clamp(100px, 12vw, 140px) 24px clamp(48px, 6vw, 96px)' }}>
+        <section className="theme-page page-theme-research" style={{ color: 'hsl(var(--app-text))', padding: 'clamp(100px, 12vw, 140px) 24px clamp(48px, 6vw, 96px)' }}>
             <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
                 {/* Header */}
                 <div style={{ textAlign: 'left', marginBottom: '60px' }}>
-                    <span style={{ fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#2563EB', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif' }}>
+                    <span style={{ fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'hsl(var(--theme-accent))', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif' }}>
                         — {intro.badge || 'RESEARCH & PUBLICATIONS'}
                     </span>
                     <h2 style={{
@@ -69,7 +72,7 @@ export default function ResearchSection({ data }: ResearchSectionProps) {
                     }}>
                         {intro.title_line_1 || 'A Decade of'}<br />
                         <span style={{
-                            background: 'linear-gradient(135deg, #2563EB 0%, #0D9488 100%)',
+                            background: 'linear-gradient(135deg, hsl(var(--theme-accent)) 0%, hsl(var(--theme-accent-2)) 100%)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             display: 'inline-block'
@@ -78,7 +81,7 @@ export default function ResearchSection({ data }: ResearchSectionProps) {
                 </div>
 
                 {/* Publication stats */}
-                <div style={{ marginBottom: '20px' }}>
+                {shouldShow('research.metrics') && <div style={{ marginBottom: '20px' }}>
                     <h3 style={{ fontFamily: 'Archivo', fontWeight: 700, fontSize: '14px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#71717A', marginBottom: '16px', marginTop: 0 }}>Publication Output</h3>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '1px', backgroundColor: '#E4E4E7', border: '1px solid #E4E4E7', marginBottom: '48px' }}>
                         <MetricCard value={`${publications.total_papers}+`} label="Research Papers" sub="International Journals & Conferences" />
@@ -86,14 +89,14 @@ export default function ResearchSection({ data }: ResearchSectionProps) {
                         <MetricCard value={publications.books_authored} label="Books Authored" />
                         <MetricCard value={publications.copyrights} label="Copyrights" />
                     </div>
-                </div>
+                </div>}
 
                 {/* Scholar profiles */}
                 <div ref={metricsRef} className="stagger-children" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px', marginBottom: '80px' }}>
                     {/* Google Scholar */}
                     <div style={{ backgroundColor: '#09090B', color: '#FAFAFA', border: '1px solid #27272A', padding: '36px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '28px' }}>
-                            <TrendingUp size={18} color="#2563EB" />
+                            <TrendingUp size={18} color="hsl(var(--theme-accent))" />
                             <span style={{ fontSize: '13px', fontWeight: 600, color: '#A1A1AA', letterSpacing: '0.04em' }}>Google Scholar</span>
                         </div>
                         {[
@@ -107,7 +110,7 @@ export default function ResearchSection({ data }: ResearchSectionProps) {
                                 <span style={{ fontFamily: 'Archivo, sans-serif', fontSize: '20px', fontWeight: 800, color: '#FAFAFA' }}>{value}</span>
                             </div>
                         ))}
-                        <a href={personal_info.google_scholar.link} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '20px', fontSize: '12px', color: '#2563EB', textDecoration: 'none', fontWeight: 500 }}>
+                        <a href={personal_info.google_scholar.link} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '20px', fontSize: '12px', color: 'hsl(var(--theme-accent))', textDecoration: 'none', fontWeight: 500 }}>
                             View Profile <ExternalLink size={12} />
                         </a>
                     </div>
@@ -136,7 +139,7 @@ export default function ResearchSection({ data }: ResearchSectionProps) {
                 </div>
 
                 {/* Funded Projects */}
-                <div ref={projectsRef} className="reveal">
+                {shouldShow('research.projects') && <div ref={projectsRef} className="reveal">
                     <h3 style={{ fontFamily: 'Archivo', fontWeight: 700, fontSize: '14px', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#71717A', marginBottom: '24px', marginTop: 0 }}>Major Funded Research Projects</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', backgroundColor: '#E4E4E7', border: '1px solid #E4E4E7' }}>
                         {major_research_projects.map((project) => (
@@ -167,7 +170,7 @@ export default function ResearchSection({ data }: ResearchSectionProps) {
                             Total sanctioned: <strong style={{ color: '#09090B' }}>₹{major_research_projects.reduce((s, p) => s + p.amount_lakhs, 0).toFixed(2)} Lakhs</strong>
                         </span>
                     </div>
-                </div>
+                </div>}
             </div>
         </section>
     )

@@ -108,6 +108,71 @@ const fullPortfolioData = {
         keywords: "Dr Madhu Bala, Professor CSE, Machine Learning, Image Mining, Computer Vision, JNTUH, DST research",
     },
     dynamic_sections: [],
+    activities: [
+        {
+            key: "publications",
+            label: "Publications",
+            description: "Journals, conferences, book chapters, patents, copyrights, and authored books.",
+            visible: true,
+            order: 0,
+            records: [
+                { title: "International Journal Publications", type: "Journals", description: "Peer-reviewed journal contributions across machine learning, image mining, computer vision, and healthcare analytics.", organization: "Indexed journals" },
+                { title: "Conference Publications", type: "Conferences", description: "Research presented in national and international academic conferences.", organization: "Academic conferences" },
+                { title: "Books and Intellectual Property", type: "Books", description: "Books authored, patents filed, and copyrights registered as part of sustained academic output.", organization: "Academic publishing" },
+            ],
+        },
+        {
+            key: "certifications",
+            label: "Continuing Education & Certifications",
+            description: "Professional learning, faculty development, and certifications.",
+            visible: true,
+            order: 1,
+            records: [
+                { title: "Faculty Development Programs", type: "FDP", description: "Continuing education programs in AI, machine learning, data science, and academic leadership." },
+                { title: "Professional Certifications", type: "Certification", description: "Certifications and structured learning in emerging computing disciplines." },
+            ],
+        },
+        {
+            key: "eContent",
+            label: "E-Content Developed",
+            description: "Digital learning resources, tutorials, and structured academic content.",
+            visible: true,
+            order: 2,
+            records: [
+                { title: "Course Learning Materials", type: "Digital Content", description: "Lecture resources and guided learning assets for CSE subjects." },
+                { title: "Research-Oriented Tutorials", type: "Tutorials", description: "E-content supporting machine learning, image processing, and data science topics." },
+            ],
+        },
+        {
+            key: "events",
+            label: "Events Organised",
+            description: "Workshops, webinars, conferences, and student research activities.",
+            visible: true,
+            order: 3,
+            records: [
+                { title: "Workshops and Webinars", type: "Event", description: "Academic events organized for students, faculty, and research communities.", organization: "Department of CSE" },
+                { title: "Research and Innovation Activities", type: "Coordination", description: "Events supporting project development, hackathons, and scholarly exchange." },
+            ],
+        },
+        {
+            key: "guestTalks",
+            label: "Guest Talks",
+            description: "Invited lectures, panels, and academic outreach.",
+            visible: true,
+            order: 4,
+            records: [
+                { title: "Invited Academic Lectures", type: "Guest Talk", description: "Talks on machine learning, research methodology, data science, and academic leadership." },
+                { title: "Panel Discussions and Mentoring Sessions", type: "Panel", description: "Knowledge-sharing sessions for students, faculty, and professional communities." },
+            ],
+        },
+    ],
+    layout_config: [
+        { key: "home.hero", label: "Home Hero", page: "home", visible: true, order: 0, themeClass: "page-theme-home" },
+        { key: "home.about", label: "About Preview", page: "home", visible: true, order: 1, themeClass: "page-theme-home" },
+        { key: "research.metrics", label: "Research Metrics", page: "research", visible: true, order: 0, themeClass: "page-theme-research" },
+        { key: "research.projects", label: "Funded Projects", page: "research", visible: true, order: 1, themeClass: "page-theme-research" },
+        { key: "teaching.core", label: "Teaching Core Content", page: "teaching", visible: true, order: 0, themeClass: "page-theme-teaching" },
+    ],
     teaching_intro: {
         badge: "TEACHING & LEADERSHIP",
         title_line_1: "18 Years of",

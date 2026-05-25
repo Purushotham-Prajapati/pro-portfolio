@@ -34,9 +34,9 @@ export function SaveBar({ saving, message, onSave }: {
             <button
                 onClick={onSave}
                 disabled={saving}
-                className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 rounded-lg text-sm font-semibold text-white transition-all cursor-pointer"
+                className="flex items-center gap-2 px-5 py-2.5 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 rounded-lg text-sm font-semibold text-white transition-all cursor-pointer"
             >
-                {saving ? '⏳ Saving...' : '💾 Save Changes'}
+                {saving ? 'Saving...' : 'Save Changes'}
             </button>
             {message && (
                 <span className={`text-sm font-medium ${message.type === 'success' ? 'text-emerald-400' : 'text-red-400'}`}>
@@ -74,7 +74,7 @@ export function Input({ value, onChange, placeholder, type = 'text' }: {
             value={value}
             onChange={e => onChange(e.target.value)}
             placeholder={placeholder}
-            className="w-full rounded-lg border-0 bg-zinc-800/50 py-2.5 px-3 text-white text-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-blue-500 outline-none transition-all placeholder:text-zinc-600"
+            className="w-full rounded-lg border-0 bg-zinc-800/50 py-2.5 px-3 text-white text-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-amber-500 outline-none transition-all placeholder:text-zinc-600"
         />
     );
 }

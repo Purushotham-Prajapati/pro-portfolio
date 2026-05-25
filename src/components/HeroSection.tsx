@@ -56,9 +56,10 @@ export default function HeroSection({ data }: HeroSectionProps) {
     return (
         <section
             id="hero"
+            className="page-theme-home"
             style={{
                 minHeight: '100vh',
-                backgroundColor: '#09090B',
+                background: 'linear-gradient(135deg, hsl(24 21% 9%) 0%, hsl(17 72% 17%) 48%, hsl(38 64% 12%) 100%)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
@@ -82,7 +83,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
                 position: 'absolute', top: '-10%', right: '-5%',
                 width: '400px', height: '400px',
                 borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%)',
+                background: 'radial-gradient(circle, hsl(var(--theme-accent-2) / 0.18) 0%, transparent 70%)',
                 pointerEvents: 'none',
             }} />
 
@@ -96,10 +97,10 @@ export default function HeroSection({ data }: HeroSectionProps) {
                     transform: visible ? 'none' : 'translateY(20px)',
                     transition: 'all 0.7s ease 0.1s',
                 }}>
-                    <span style={{ width: '40px', height: '1px', background: '#2563EB', display: 'block' }} />
+                    <span style={{ width: '40px', height: '1px', background: 'hsl(var(--theme-accent-2))', display: 'block' }} />
                     <span style={{
                         fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase',
-                        color: '#2563EB', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif',
+                        color: 'hsl(var(--theme-accent-2))', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif',
                     }}>
                         Professor · Researcher · Mentor
                     </span>
@@ -119,7 +120,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
                             transition: `all 0.8s cubic-bezier(0.25,0.46,0.45,0.94) ${0.2 + i * 0.1}s`,
                         }}>
                             {i === nameParts.length - 1 ? (
-                                <span style={{ color: '#2563EB' }}>{part}</span>
+                                <span style={{ color: 'hsl(var(--theme-accent-2))' }}>{part}</span>
                             ) : part}
                         </span>
                     ))}
