@@ -1,5 +1,5 @@
 /node_modules
-/.agent
+# /.agent
 /dist
 /.next
 /out
@@ -26,3 +26,10 @@ pnpm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.agent
+.antigravitycli
+.codex
+.gemini
+.openai
+.google-ai-studio
