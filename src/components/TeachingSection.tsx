@@ -71,7 +71,7 @@ export default function TeachingSection({ data }: TeachingSectionProps) {
                         fontWeight: 800,
                         lineHeight: 1.1,
                         letterSpacing: '-0.02em',
-                        color: '#09090B',
+                        color: 'hsl(var(--app-text))',
                         margin: 0
                     }}>
                         {intro.title_line_1}

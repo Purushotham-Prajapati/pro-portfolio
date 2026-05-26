@@ -2,7 +2,8 @@
 
 import type { CSSProperties } from "react";
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useSpring } from "framer-motion";
+import TiltCard from "./shared/TiltCard";
 
 export interface TimelineEvent {
     year: number;
@@ -64,11 +65,11 @@ function TimelineCard({ event, index }: { event: TimelineEvent; index: number })
         <>
             <div className="tl-row-desktop">
                 <motion.div
-                    initial={isLeft ? { opacity: 0, x: -48 } : false}
-                    whileInView={isLeft ? { opacity: 1, x: 0 } : undefined}
+                    initial={false}
+                    whileInView={isLeft ? { x: 0, rotateY: 0 } : undefined}
                     viewport={{ once: true, amount: 0.28 }}
-                    transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    style={{ padding: "0 32px 64px 0", textAlign: "right" }}
+                    transition={{ type: "spring", stiffness: 60, damping: 15 }}
+                    style={{ padding: "0 32px 64px 0", textAlign: "right", perspective: 900 }}
                 >
                     {isLeft && <TimelineCardContent event={event} color={color} label={label} align="right" />}
                 </motion.div>
@@ -81,11 +82,11 @@ function TimelineCard({ event, index }: { event: TimelineEvent; index: number })
                 </div>
 
                 <motion.div
-                    initial={!isLeft ? { opacity: 0, x: 48 } : false}
-                    whileInView={!isLeft ? { opacity: 1, x: 0 } : undefined}
+                    initial={false}
+                    whileInView={!isLeft ? { x: 0, rotateY: 0 } : undefined}
                     viewport={{ once: true, amount: 0.28 }}
-                    transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    style={{ padding: "0 0 64px 32px" }}
+                    transition={{ type: "spring", stiffness: 60, damping: 15 }}
+                    style={{ padding: "0 0 64px 32px", perspective: 900 }}
                 >
                     {!isLeft && <TimelineCardContent event={event} color={color} label={label} align="left" />}
                 </motion.div>
@@ -100,8 +101,8 @@ function TimelineCard({ event, index }: { event: TimelineEvent; index: number })
                 </div>
 
                 <motion.div
-                    initial={{ opacity: 0, y: 28 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={false}
+                    whileInView={{ y: 0 }}
                     viewport={{ once: true, amount: 0.22 }}
                     transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
                     style={{ flex: 1, paddingBottom: "36px" }}
@@ -125,21 +126,26 @@ function TimelineCardContent({
     align: "left" | "right";
 }) {
     return (
-        <motion.div
+        <TiltCard
             className="tl-card"
             style={{ "--event-color": color, textAlign: align } as CSSProperties}
-            whileHover={{ scale: 1.02, y: -4 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            maxTilt={7}
         >
             <span className="tl-card-label">{label}</span>
             <h3>{event.title}</h3>
             <div className="tl-card-subtitle">{event.subtitle}</div>
             <p>{event.description}</p>
-        </motion.div>
+        </TiltCard>
     );
 }
 
 export default function TimelineSection({ data }: { data: any }) {
+    const timelineRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: timelineRef,
+        offset: ["start center", "end center"],
+    });
+    const lineScale = useSpring(scrollYProgress, { stiffness: 90, damping: 24, mass: 0.4 });
     const events = data?.timeline_events || [];
     const intro = {
         ...fallbackIntro,
@@ -151,8 +157,8 @@ export default function TimelineSection({ data }: { data: any }) {
         <section id="journey" className="journey-section page-theme-journey">
             <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    initial={false}
+                    whileInView={{ y: 0 }}
                     viewport={{ once: true, amount: 0.35 }}
                     transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
                     style={{ textAlign: "left", marginBottom: "80px" }}
@@ -180,9 +186,11 @@ export default function TimelineSection({ data }: { data: any }) {
                     )}
                 </motion.div>
 
-                <div style={{ position: "relative" }}>
+                <div ref={timelineRef} style={{ position: "relative" }}>
                     <div className="tl-center-line" />
+                    <motion.div className="tl-center-line-progress" style={{ scaleY: lineScale }} />
                     <div className="tl-left-line" />
+                    <motion.div className="tl-left-line-progress" style={{ scaleY: lineScale }} />
 
                     {events.map((event: TimelineEvent, index: number) => (
                         <TimelineCard key={`${event.year}-${event.title}-${index}`} event={event} index={index} />
@@ -294,7 +302,7 @@ export default function TimelineSection({ data }: { data: any }) {
                 }
 
                 .tl-center-line {
-                    background: var(--journey-line-gradient);
+                    background: linear-gradient(to bottom, transparent, rgba(139, 92, 246, 0.22), rgba(37, 99, 235, 0.22), rgba(16, 185, 129, 0.22), transparent);
                     bottom: 0;
                     display: block;
                     left: 50%;
@@ -305,14 +313,41 @@ export default function TimelineSection({ data }: { data: any }) {
                     z-index: 1;
                 }
 
-                .tl-left-line {
+                .tl-center-line-progress {
                     background: var(--journey-line-gradient);
+                    bottom: 0;
+                    box-shadow: 0 0 26px rgba(139, 92, 246, 0.46);
+                    display: block;
+                    left: 50%;
+                    margin-left: -1.5px;
+                    position: absolute;
+                    top: 0;
+                    transform-origin: top;
+                    width: 3px;
+                    z-index: 1;
+                }
+
+                .tl-left-line {
+                    background: linear-gradient(to bottom, transparent, rgba(139, 92, 246, 0.22), rgba(37, 99, 235, 0.22), rgba(16, 185, 129, 0.22), transparent);
                     bottom: 0;
                     display: none;
                     left: 18px;
                     position: absolute;
                     top: 0;
                     width: 1px;
+                    z-index: 1;
+                }
+
+                .tl-left-line-progress {
+                    background: var(--journey-line-gradient);
+                    bottom: 0;
+                    box-shadow: 0 0 22px rgba(16, 185, 129, 0.42);
+                    display: none;
+                    left: 18px;
+                    position: absolute;
+                    top: 0;
+                    transform-origin: top;
+                    width: 3px;
                     z-index: 1;
                 }
 
@@ -451,7 +486,8 @@ export default function TimelineSection({ data }: { data: any }) {
                     }
 
                     .tl-row-desktop,
-                    .tl-center-line {
+                    .tl-center-line,
+                    .tl-center-line-progress {
                         display: none;
                     }
 
@@ -463,6 +499,10 @@ export default function TimelineSection({ data }: { data: any }) {
                     }
 
                     .tl-left-line {
+                        display: block;
+                    }
+
+                    .tl-left-line-progress {
                         display: block;
                     }
 

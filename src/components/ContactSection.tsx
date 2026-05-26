@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { BookOpen, ExternalLink, Globe, Mail } from "lucide-react";
+import MagneticWrapper from "./shared/MagneticWrapper";
 
 interface ContactSectionProps {
     data: {
@@ -130,30 +131,34 @@ export default function ContactSection({ data }: ContactSectionProps) {
 
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                         {links.map(({ icon: Icon, label, href, description, color }) => (
-                            <a key={label} href={href} target="_blank" rel="noopener noreferrer"
-                                style={{ display: "flex", alignItems: "center", gap: "20px", padding: "24px", border: "1px solid var(--glass-border)", backgroundColor: "hsl(var(--surface-hsl) / 0.62)", textDecoration: "none", transition: "border-color 0.2s ease, transform 0.2s ease", cursor: "pointer" }}
-                                onMouseEnter={(e) => { e.currentTarget.style.borderColor = color; e.currentTarget.style.transform = "translateX(4px)"; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--glass-border)"; e.currentTarget.style.transform = "translateX(0)"; }}>
-                                <div style={{ width: "44px", height: "44px", backgroundColor: `${color}18`, border: `1px solid ${color}30`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                    <Icon size={18} color={color} />
-                                </div>
-                                <div style={{ flex: 1 }}>
-                                    <div style={{ fontFamily: "Archivo, sans-serif", fontSize: "14px", fontWeight: 700, color: "hsl(var(--app-text))", marginBottom: "4px" }}>{label}</div>
-                                    <div style={{ fontSize: "12px", color: "hsl(var(--muted-text-hsl))" }}>{description}</div>
-                                </div>
-                                <ExternalLink size={14} color="hsl(var(--muted-text-hsl))" />
-                            </a>
+                            <MagneticWrapper key={label} strength={0.16}>
+                                <a href={href} target="_blank" rel="noopener noreferrer"
+                                    style={{ display: "flex", alignItems: "center", gap: "20px", padding: "24px", border: "1px solid var(--glass-border)", backgroundColor: "hsl(var(--surface-hsl) / 0.62)", textDecoration: "none", transition: "border-color 0.2s ease, box-shadow 0.2s ease", cursor: "pointer" }}
+                                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = color; e.currentTarget.style.boxShadow = `0 18px 46px ${color}24`; }}
+                                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--glass-border)"; e.currentTarget.style.boxShadow = "none"; }}>
+                                    <div style={{ width: "44px", height: "44px", backgroundColor: `${color}18`, border: `1px solid ${color}30`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                        <Icon size={18} color={color} />
+                                    </div>
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontFamily: "Archivo, sans-serif", fontSize: "14px", fontWeight: 700, color: "hsl(var(--app-text))", marginBottom: "4px" }}>{label}</div>
+                                        <div style={{ fontSize: "12px", color: "hsl(var(--muted-text-hsl))" }}>{description}</div>
+                                    </div>
+                                    <ExternalLink size={14} color="hsl(var(--muted-text-hsl))" />
+                                </a>
+                            </MagneticWrapper>
                         ))}
 
-                        <div style={{ display: "flex", alignItems: "center", gap: "20px", padding: "24px", border: "1px solid var(--glass-border)", backgroundColor: "hsl(var(--surface-hsl) / 0.62)" }}>
-                            <div style={{ width: "44px", height: "44px", backgroundColor: "#05966918", border: "1px solid #05966930", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                                <Mail size={18} color="#059669" />
+                        <MagneticWrapper strength={0.12}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "20px", padding: "24px", border: "1px solid var(--glass-border)", backgroundColor: "hsl(var(--surface-hsl) / 0.62)" }}>
+                                <div style={{ width: "44px", height: "44px", backgroundColor: "#05966918", border: "1px solid #05966930", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                                    <Mail size={18} color="#059669" />
+                                </div>
+                                <div>
+                                    <div style={{ fontFamily: "Archivo, sans-serif", fontSize: "14px", fontWeight: 700, color: "hsl(var(--app-text))", marginBottom: "4px" }}>{contact.email || "Department Contact"}</div>
+                                    <div style={{ fontSize: "12px", color: "hsl(var(--muted-text-hsl))" }}>{contact.department || "Department of Computer Science & Engineering"}</div>
+                                </div>
                             </div>
-                            <div>
-                                <div style={{ fontFamily: "Archivo, sans-serif", fontSize: "14px", fontWeight: 700, color: "hsl(var(--app-text))", marginBottom: "4px" }}>{contact.email || "Department Contact"}</div>
-                                <div style={{ fontSize: "12px", color: "hsl(var(--muted-text-hsl))" }}>{contact.department || "Department of Computer Science & Engineering"}</div>
-                            </div>
-                        </div>
+                        </MagneticWrapper>
                     </div>
                 </div>
 

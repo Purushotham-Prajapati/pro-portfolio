@@ -1,6 +1,7 @@
 import './globals.css'
 import NavbarWrapper from '../components/NavbarWrapper'
 import { ThemeProvider } from '../components/shared/ThemeContext'
+import LenisProvider from '../components/shared/LenisProvider'
 
 import type { Metadata, Viewport } from 'next'
 
@@ -87,8 +88,10 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
-          <NavbarWrapper />
-          {children}
+          <LenisProvider>
+            <NavbarWrapper />
+            {children}
+          </LenisProvider>
         </ThemeProvider>
       </body>
     </html>

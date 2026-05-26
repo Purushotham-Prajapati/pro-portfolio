@@ -68,7 +68,7 @@ export default function ResearchSection({ data }: ResearchSectionProps) {
                     <h2 style={{
                         fontFamily: 'Archivo, sans-serif', fontWeight: 800,
                         fontSize: 'clamp(32px, 5vw, 56px)', lineHeight: 1.1,
-                        letterSpacing: '-0.02em', color: '#09090B', margin: '12px 0 0',
+                        letterSpacing: '-0.02em', color: 'hsl(var(--app-text))', margin: '12px 0 0',
                     }}>
                         {intro.title_line_1 || 'A Decade of'}<br />
                         <span style={{

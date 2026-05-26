@@ -9,6 +9,8 @@ const fullPortfolioData = {
     personal_info: {
         name: "Dr. M. Madhu Bala",
         designation: "Professor of Computer Science and Engineering",
+        profile_image_url: "",
+        profile_image_file_id: "",
         experience_summary: { total_years: 21, teaching: 18, industry: 3, research: 13 },
         ratification: [
             { designation: "Professor", university: "JNTUH", date: "13 May 2022" },

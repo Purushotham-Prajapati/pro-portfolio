@@ -1,6 +1,9 @@
 "use client";
+import type { CSSProperties } from 'react'
 import { useRef, useEffect } from 'react'
 import { Trophy } from 'lucide-react'
+import { motion } from 'framer-motion'
+import TiltCard from './shared/TiltCard'
 
 const awardColors = [
     '#D97706',
@@ -70,21 +73,53 @@ export default function AwardsSection({ data }: AwardsSectionProps) {
                     {sorted.map((award, i) => {
                         const color = awardColors[i % awardColors.length]
                         return (
-                            <div key={award.title} className="award-card" style={{
+                            <motion.div
+                                key={award.title}
+                                initial={false}
+                                whileInView={{ y: 0, rotateX: 0 }}
+                                viewport={{ once: true, amount: 0.25 }}
+                                transition={{ type: 'spring', stiffness: 90, damping: 18, delay: Math.min(i * 0.04, 0.28) }}
+                                style={{ perspective: 900 }}
+                            >
+                                <TiltCard className="award-card award-card-tilt" style={{
                                 padding: '32px 28px',
                                 borderLeft: `3px solid ${color}`,
-                                transition: 'background-color 0.2s ease, transform 0.2s ease', cursor: 'default',
-                            }}
-                                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)' }}
-                                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)' }}>
-                                <Trophy size={18} color={color} strokeWidth={1.5} style={{ marginBottom: '16px' }} />
-                                <div style={{ fontFamily: 'Archivo, sans-serif', fontSize: '32px', fontWeight: 800, color, lineHeight: 1, marginBottom: '12px' }}>{award.year}</div>
-                                <div style={{ fontSize: '14px', fontWeight: 600, color: 'hsl(var(--app-text))', lineHeight: 1.4 }}>{award.title}</div>
-                            </div>
+                                cursor: 'default',
+                            } as CSSProperties}>
+                                    <span className="award-shimmer" />
+                                    <Trophy size={18} color={color} strokeWidth={1.5} style={{ marginBottom: '16px', position: 'relative', zIndex: 1 }} />
+                                    <div style={{ fontFamily: 'Archivo, sans-serif', fontSize: '32px', fontWeight: 800, color, lineHeight: 1, marginBottom: '12px', position: 'relative', zIndex: 1 }}>{award.year}</div>
+                                    <div style={{ fontSize: '14px', fontWeight: 600, color: 'hsl(var(--app-text))', lineHeight: 1.4, position: 'relative', zIndex: 1 }}>{award.title}</div>
+                                </TiltCard>
+                            </motion.div>
                         )
                     })}
                 </div>
             </div>
+            <style>{`
+                .award-card-tilt {
+                    min-height: 100%;
+                    overflow: hidden;
+                    position: relative;
+                }
+
+                .award-shimmer {
+                    background: linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.26) 45%, transparent 70%);
+                    bottom: -20%;
+                    left: -80%;
+                    pointer-events: none;
+                    position: absolute;
+                    top: -20%;
+                    transform: translateX(0) skewX(-18deg);
+                    transition: transform 600ms ease;
+                    width: 62%;
+                    z-index: 0;
+                }
+
+                .award-card-tilt:hover .award-shimmer {
+                    transform: translateX(330%) skewX(-18deg);
+                }
+            `}</style>
         </section>
     )
 }
