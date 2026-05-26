@@ -304,6 +304,7 @@ h6 {
   --theme-accent-2: 38 92% 50%;
   --theme-soft: 32 86% 90%;
   --theme-shadow: 0 18px 42px hsla(24, 78%, 38%, 0.22);
+  --contact-accent-gradient: linear-gradient(135deg, #E11D48 0%, #EA580C 45%, #D97706 100%);
 }
 
 html.dark {
@@ -557,4 +558,34 @@ html.dark .theme-page {
   border: 1px dashed var(--glass-border-strong);
   color: hsl(var(--muted-text-hsl));
   padding: 28px;
+}
+
+.awards-grid {
+  background: hsl(var(--theme-accent) / 0.18);
+  border: 1px solid hsl(var(--theme-accent) / 0.2);
+  box-shadow: 0 24px 70px hsl(var(--theme-accent) / 0.14);
+}
+
+.award-card {
+  background: hsl(var(--surface-hsl) / 0.74);
+  backdrop-filter: blur(12px);
+}
+
+.award-card:hover {
+  background: hsl(var(--theme-soft) / 0.7);
+}
+
+html.dark .award-card {
+  background: hsl(240 5% 5% / 0.86);
+}
+
+html.dark .award-card:hover {
+  background: hsl(240 5% 8% / 0.92);
+}
+
+.contact-card {
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 24px 70px hsl(var(--theme-accent) / 0.14);
 }

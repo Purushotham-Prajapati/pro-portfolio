@@ -3,7 +3,12 @@ import { useRef, useEffect } from 'react'
 import { Trophy } from 'lucide-react'
 
 const awardColors = [
-    '#D97706', '#2563EB', '#059669', '#DC2626', '#0D9488', '#0891B2', '#EA580C',
+    '#D97706',
+    '#EA580C',
+    '#059669',
+    '#DC2626',
+    '#B45309',
+    '#E11D48',
 ]
 
 interface AwardsSectionProps {
@@ -35,7 +40,7 @@ export default function AwardsSection({ data }: AwardsSectionProps) {
     };
 
     return (
-        <section style={{ backgroundColor: '#09090B', padding: 'clamp(100px, 12vw, 140px) 24px clamp(48px, 6vw, 96px)' }}>
+        <section className="theme-page page-theme-awards awards-section" style={{ padding: 'clamp(100px, 12vw, 140px) 24px clamp(48px, 6vw, 96px)' }}>
             <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
 
                 {/* Header */}
@@ -46,11 +51,11 @@ export default function AwardsSection({ data }: AwardsSectionProps) {
                     <h2 style={{
                         fontFamily: 'Archivo, sans-serif', fontWeight: 800,
                         fontSize: 'clamp(32px, 5vw, 56px)', lineHeight: 1.1,
-                        letterSpacing: '-0.02em', color: '#FAFAFA', margin: '12px 0 0',
+                        letterSpacing: '-0.02em', color: 'hsl(var(--app-text))', margin: '12px 0 0',
                     }}>
                         {intro.title_line_1 || 'Recognition that'}<br />
                         <span style={{
-                            background: 'linear-gradient(135deg, #D97706 0%, #EA580C 100%)',
+                            background: 'linear-gradient(135deg, #D97706 0%, #EA580C 48%, #E11D48 100%)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             display: 'inline-block'
@@ -58,23 +63,23 @@ export default function AwardsSection({ data }: AwardsSectionProps) {
                     </h2>
                 </div>
 
-                <div ref={gridRef} className="stagger-children" style={{
+                <div ref={gridRef} className="stagger-children visible awards-grid" style={{
                     display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                    gap: '1px', backgroundColor: '#1A1A1C', border: '1px solid #27272A',
+                    gap: '1px',
                 }}>
                     {sorted.map((award, i) => {
                         const color = awardColors[i % awardColors.length]
                         return (
-                            <div key={award.title} style={{
-                                backgroundColor: '#09090B', padding: '32px 28px',
+                            <div key={award.title} className="award-card" style={{
+                                padding: '32px 28px',
                                 borderLeft: `3px solid ${color}`,
                                 transition: 'background-color 0.2s ease, transform 0.2s ease', cursor: 'default',
                             }}
-                                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#111114'; e.currentTarget.style.transform = 'translateY(-2px)' }}
-                                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#09090B'; e.currentTarget.style.transform = 'translateY(0)' }}>
+                                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)' }}
+                                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)' }}>
                                 <Trophy size={18} color={color} strokeWidth={1.5} style={{ marginBottom: '16px' }} />
                                 <div style={{ fontFamily: 'Archivo, sans-serif', fontSize: '32px', fontWeight: 800, color, lineHeight: 1, marginBottom: '12px' }}>{award.year}</div>
-                                <div style={{ fontSize: '14px', fontWeight: 600, color: '#FAFAFA', lineHeight: 1.4 }}>{award.title}</div>
+                                <div style={{ fontSize: '14px', fontWeight: 600, color: 'hsl(var(--app-text))', lineHeight: 1.4 }}>{award.title}</div>
                             </div>
                         )
                     })}

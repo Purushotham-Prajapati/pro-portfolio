@@ -89,7 +89,10 @@ const fullPortfolioData = {
         google_scholar: { link: "https://scholar.google.com/citations?user=4R81YuIAAAAJ&hl=en", documents: 100, citations: 780 },
         scopus: { link: "https://www.scopus.com/authid/detail.uri?authorId=57192681614", h_index: 10 },
         orcid: "0000-0003-4734-5914",
+        footer_text: "Copyright 2025 Dr. M. Madhu Bala",
+        footer_note: "IEEE Member #96417786 · JNTUH Ratified",
     },
+    contact_display: { showDocuments: true, showCitations: true, showHIndex: true, showOrcid: true },
     // NEW: Navbar items — editable from admin
     nav_items: [
         { label: "Home", href: "/", order: 0, is_visible: true },

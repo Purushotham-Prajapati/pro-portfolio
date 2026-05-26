@@ -6,9 +6,9 @@ import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } 
 import { CSS } from '@dnd-kit/utilities';
 import { SkeletonSection, SaveBar, SectionHeader, FieldGroup, Input } from '../../../../components/shared/AdminUI';
 
-const COLORS = ['#D97706', '#2563EB', '#059669', '#DC2626', '#0D9488', '#0891B2', '#EA580C'];
+const COLORS = ['#D97706', '#EA580C', '#059669', '#DC2626', '#B45309', '#E11D48'];
 
-function SortableAward({ id, award, index, onChange, onRemove }: any) {
+function SortableAward({ id, award, index, onEdit, onRemove }: any) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
     const color = COLORS[index % COLORS.length];
     return (
@@ -16,9 +16,11 @@ function SortableAward({ id, award, index, onChange, onRemove }: any) {
             className="flex items-center gap-3 p-3 rounded-xl bg-zinc-900/50 ring-1 ring-white/5">
             <button {...attributes} {...listeners} className="cursor-grab text-zinc-600 hover:text-zinc-400"><GripVertical size={16} /></button>
             <div className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: color }} />
-            <div className="flex-1 grid grid-cols-4 gap-3">
-                <div className="col-span-3"><Input value={award.title} onChange={v => onChange(index, 'title', v)} placeholder="Award Title" /></div>
-                <Input type="number" value={award.year} onChange={v => onChange(index, 'year', Number(v))} placeholder="Year" />
+            <div className="flex-1 min-w-0">
+                <button onClick={() => onEdit(index)} className="w-full text-left">
+                    <div className="truncate text-sm font-semibold text-white">{award.title || 'Untitled award'}</div>
+                    <div className="text-xs text-zinc-500">{award.year || 'Year not set'}</div>
+                </button>
             </div>
             <button onClick={() => onRemove(index)} className="text-zinc-600 hover:text-red-400 cursor-pointer"><Trash2 size={15} /></button>
         </div>
@@ -30,6 +32,9 @@ export default function AwardsEditor() {
     const [introBadge, setIntroBadge] = useState('HONOURS & AWARDS');
     const [introLine1, setIntroLine1] = useState('Recognition that');
     const [introLine2, setIntroLine2] = useState('spans 14 years.');
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const [draftAward, setDraftAward] = useState<any>({ title: '', year: new Date().getFullYear() });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState<any>(null);
@@ -49,9 +54,25 @@ export default function AwardsEditor() {
             });
     }, []);
 
-    const onChange = (i: number, key: string, val: any) => setAwards(a => { const n = [...a]; n[i] = { ...n[i], [key]: val }; return n; });
     const onRemove = (i: number) => setAwards(a => a.filter((_, idx) => idx !== i));
-    const addAward = () => setAwards(a => [...a, { title: '', year: new Date().getFullYear() }]);
+    const openAwardModal = (i: number | null) => {
+        setEditingIndex(i);
+        setDraftAward(i === null ? { title: '', year: new Date().getFullYear() } : { ...awards[i] });
+        setModalOpen(true);
+    };
+    const closeAwardModal = () => {
+        setModalOpen(false);
+        setEditingIndex(null);
+        setDraftAward({ title: '', year: new Date().getFullYear() });
+    };
+    const saveAwardDraft = () => {
+        if (editingIndex === null) {
+            setAwards(a => [...a, draftAward]);
+        } else {
+            setAwards(a => a.map((award, idx) => idx === editingIndex ? draftAward : award));
+        }
+        closeAwardModal();
+    };
 
     const handleDragEnd = (e: DragEndEvent) => {
         const { active, over } = e;
@@ -109,18 +130,37 @@ export default function AwardsEditor() {
             <div className="border-t border-white/5 pt-6">
                 <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-sm font-semibold text-zinc-300">Awards & Honours List</h3>
-                    <button onClick={addAward} className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-xs font-semibold rounded-lg ring-1 ring-amber-500/30 cursor-pointer transition-all">
+                    <button onClick={() => openAwardModal(null)} className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 text-xs font-semibold rounded-lg ring-1 ring-amber-500/30 cursor-pointer transition-all">
                         <Plus size={13} /> Add Award
                     </button>
                 </div>
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                     <SortableContext items={awards.map((_, i) => `aw-${i}`)} strategy={verticalListSortingStrategy}>
                         <div className="space-y-2">
-                            {awards.map((aw, i) => <SortableAward key={`aw-${i}`} id={`aw-${i}`} award={aw} index={i} onChange={onChange} onRemove={onRemove} />)}
+                            {awards.map((aw, i) => <SortableAward key={`aw-${i}`} id={`aw-${i}`} award={aw} index={i} onEdit={openAwardModal} onRemove={onRemove} />)}
                         </div>
                     </SortableContext>
                 </DndContext>
             </div>
+            {modalOpen ? (
+                <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/70 p-4">
+                    <div className="w-full max-w-lg rounded-xl bg-zinc-950 p-6 ring-1 ring-amber-500/25 shadow-2xl">
+                        <h3 className="text-lg font-bold text-white">{editingIndex === null ? 'Add Award' : 'Edit Award'}</h3>
+                        <div className="mt-5 space-y-4">
+                            <FieldGroup label="Award Title">
+                                <Input value={draftAward.title || ''} onChange={v => setDraftAward((d: any) => ({ ...d, title: v }))} />
+                            </FieldGroup>
+                            <FieldGroup label="Year">
+                                <Input type="number" value={draftAward.year || new Date().getFullYear()} onChange={v => setDraftAward((d: any) => ({ ...d, year: Number(v) }))} />
+                            </FieldGroup>
+                        </div>
+                        <div className="mt-6 flex justify-end gap-3">
+                            <button onClick={closeAwardModal} className="rounded-lg px-4 py-2 text-sm font-semibold text-zinc-300 ring-1 ring-white/10">Cancel</button>
+                            <button onClick={saveAwardDraft} className="rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-500">Save Award</button>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
             <SaveBar saving={saving} message={message} onSave={save} />
         </div>
     );

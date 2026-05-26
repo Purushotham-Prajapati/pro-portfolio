@@ -35,6 +35,7 @@ export default function Navbar({ navItems }: { navItems: NavItem[] }) {
     useEffect(() => setMobileOpen(false), [pathname]);
 
     const solid = scrolled || pathname !== "/";
+    const homeTransparent = pathname === "/" && !solid;
     const visibleItems = navItems.filter((item) => item.is_visible).sort((a, b) => a.order - b.order);
 
     return (
@@ -84,10 +85,10 @@ export default function Navbar({ navItems }: { navItems: NavItem[] }) {
                             MB
                         </div>
                         <div style={{ minWidth: 0 }}>
-                            <div style={{ fontFamily: "Archivo, sans-serif", fontSize: "14px", fontWeight: 700, color: "var(--nav-text)", lineHeight: 1.2 }}>
+                            <div style={{ fontFamily: "Archivo, sans-serif", fontSize: "14px", fontWeight: 700, color: homeTransparent ? "#FAFAFA" : "var(--nav-text)", lineHeight: 1.2 }}>
                                 Dr. M. Madhu Bala
                             </div>
-                            <div style={{ fontSize: "10px", color: "var(--muted-text)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                            <div style={{ fontSize: "10px", color: homeTransparent ? "rgba(250,250,250,0.68)" : "var(--muted-text)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
                                 Professor · CSE
                             </div>
                         </div>
@@ -108,16 +109,16 @@ export default function Navbar({ navItems }: { navItems: NavItem[] }) {
                                             letterSpacing: "0.06em",
                                             textTransform: "uppercase",
                                             textDecoration: "none",
-                                            color: active ? "var(--nav-text)" : "var(--muted-text)",
+                                            color: active ? (homeTransparent ? "#FAFAFA" : "var(--nav-text)") : (homeTransparent ? "rgba(250,250,250,0.68)" : "var(--muted-text)"),
                                             backgroundColor: active ? "var(--nav-active-bg)" : "transparent",
                                             border: active ? "1px solid var(--glass-border-strong)" : "1px solid transparent",
                                             transition: "all 0.2s ease",
                                         }}
                                         onMouseEnter={(event) => {
-                                            if (!active) event.currentTarget.style.color = "var(--nav-text)";
+                                            if (!active) event.currentTarget.style.color = homeTransparent ? "#FAFAFA" : "var(--nav-text)";
                                         }}
                                         onMouseLeave={(event) => {
-                                            if (!active) event.currentTarget.style.color = "var(--muted-text)";
+                                            if (!active) event.currentTarget.style.color = homeTransparent ? "rgba(250,250,250,0.68)" : "var(--muted-text)";
                                         }}
                                     >
                                         {item.label}
@@ -139,9 +140,15 @@ export default function Navbar({ navItems }: { navItems: NavItem[] }) {
                                     letterSpacing: "0.06em",
                                     textTransform: "uppercase",
                                     textDecoration: "none",
-                                    color: pathname.startsWith("/academic-activities") ? "var(--nav-text)" : "var(--muted-text)",
+                                    color: pathname.startsWith("/academic-activities") ? "var(--nav-text)" : (homeTransparent ? "rgba(250,250,250,0.68)" : "var(--muted-text)"),
                                     backgroundColor: pathname.startsWith("/academic-activities") ? "var(--nav-active-bg)" : "transparent",
                                     border: pathname.startsWith("/academic-activities") ? "1px solid var(--glass-border-strong)" : "1px solid transparent",
+                                }}
+                                onMouseEnter={(event) => {
+                                    if (!pathname.startsWith("/academic-activities")) event.currentTarget.style.color = homeTransparent ? "#FAFAFA" : "var(--nav-text)";
+                                }}
+                                onMouseLeave={(event) => {
+                                    if (!pathname.startsWith("/academic-activities")) event.currentTarget.style.color = homeTransparent ? "rgba(250,250,250,0.68)" : "var(--muted-text)";
                                 }}
                             >
                                 Academic Activities <ChevronDown size={13} />

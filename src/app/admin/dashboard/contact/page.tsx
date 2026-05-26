@@ -10,6 +10,7 @@ export default function ContactEditor() {
     const [introBadge, setIntroBadge] = useState('CONNECT');
     const [introLine1, setIntroLine1] = useState('Academic Profiles');
     const [introLine2, setIntroLine2] = useState('& Collaboration');
+    const [display, setDisplay] = useState<any>({ showDocuments: true, showCitations: true, showHIndex: true, showOrcid: true });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState<any>(null);
@@ -19,6 +20,7 @@ export default function ContactEditor() {
             .then(r => r.json())
             .then(d => {
                 setContact(d.contact || {});
+                setDisplay(d.contact_display || { showDocuments: true, showCitations: true, showHIndex: true, showOrcid: true });
                 if (d.contact_intro) {
                     setIntroBadge(d.contact_intro.badge || 'CONNECT');
                     setIntroLine1(d.contact_intro.title_line_1 || '');
@@ -35,6 +37,7 @@ export default function ContactEditor() {
         setSaving(true);
         try {
             await fetch('/api/portfolio', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ section: 'contact', data: contact }) });
+            await fetch('/api/portfolio', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ section: 'contact_display', data: display }) });
             await fetch('/api/portfolio', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
@@ -82,6 +85,30 @@ export default function ContactEditor() {
                         <FieldGroup label="ORCID"><Input value={contact.orcid || ''} onChange={v => set('orcid', v)} placeholder="0000-0000-0000-0000" /></FieldGroup>
                         <div className="col-span-2"><FieldGroup label="Department"><Input value={contact.department || ''} onChange={v => set('department', v)} /></FieldGroup></div>
                         <div className="col-span-2"><FieldGroup label="Institution"><Input value={contact.institution || ''} onChange={v => set('institution', v)} /></FieldGroup></div>
+                        <div className="col-span-2"><FieldGroup label="Footer Text"><Input value={contact.footer_text || ''} onChange={v => set('footer_text', v)} /></FieldGroup></div>
+                        <div className="col-span-2"><FieldGroup label="Footer Note"><Input value={contact.footer_note || ''} onChange={v => set('footer_note', v)} /></FieldGroup></div>
+                    </div>
+                </div>
+
+                <div className="rounded-xl bg-zinc-900/50 p-6 ring-1 ring-white/5 space-y-4">
+                    <h3 className="text-sm font-semibold text-zinc-300 border-b border-white/5 pb-2">Display Controls</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        {[
+                            ['showDocuments', 'Show Google Scholar documents'],
+                            ['showCitations', 'Show Google Scholar citations'],
+                            ['showHIndex', 'Show Scopus h-index'],
+                            ['showOrcid', 'Show ORCID badge/details'],
+                        ].map(([key, label]) => (
+                            <label key={key} className="flex items-center justify-between rounded-lg bg-zinc-950/50 px-4 py-3 ring-1 ring-white/10">
+                                <span className="text-sm text-zinc-300">{label}</span>
+                                <input
+                                    type="checkbox"
+                                    checked={display[key] !== false}
+                                    onChange={e => setDisplay((d: any) => ({ ...d, [key]: e.target.checked }))}
+                                    className="h-4 w-4 accent-amber-500"
+                                />
+                            </label>
+                        ))}
                     </div>
                 </div>
 
