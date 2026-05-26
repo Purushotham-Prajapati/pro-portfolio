@@ -8,7 +8,7 @@ import { SkeletonSection, SaveBar, SectionHeader, FieldGroup, Input } from '../.
 
 const EVENT_TYPES = ['education', 'career', 'award', 'research', 'milestone'];
 const TYPE_COLORS: Record<string, string> = {
-    education: '#059669', career: '#2563EB', award: '#D97706', research: '#DC2626', milestone: '#0D9488'
+    education: '#10B981', career: '#2563EB', award: '#F59E0B', research: '#8B5CF6', milestone: '#EC4899'
 };
 
 function SortableEvent({ id, event, index, onChange, onRemove }: any) {
@@ -45,6 +45,34 @@ function SortableEvent({ id, event, index, onChange, onRemove }: any) {
                     </div>
                 </div>
             )}
+        </div>
+    );
+}
+
+function SortableStat({ id, stat, index, onChange, onRemove }: any) {
+    const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
+
+    return (
+        <div
+            ref={setNodeRef}
+            style={{ transform: CSS.Transform.toString(transform), transition }}
+            className="space-y-2.5 rounded-xl bg-zinc-800/30 p-3.5 ring-1 ring-white/5"
+        >
+            <div className="flex items-center justify-between gap-2">
+                <button {...attributes} {...listeners} className="cursor-grab text-zinc-600 hover:text-zinc-300">
+                    <GripVertical size={15} />
+                </button>
+                <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-zinc-500">Metric {index + 1}</span>
+                <button onClick={() => onRemove(index)} className="text-zinc-600 hover:text-red-400">
+                    <Trash2 size={14} />
+                </button>
+            </div>
+            <FieldGroup label="Value">
+                <Input value={stat.value} onChange={(v) => onChange(index, 'value', v)} placeholder="e.g. 18" />
+            </FieldGroup>
+            <FieldGroup label="Label">
+                <Input value={stat.label} onChange={(v) => onChange(index, 'label', v)} placeholder="e.g. Years Teaching" />
+            </FieldGroup>
         </div>
     );
 }
@@ -90,6 +118,9 @@ export default function JourneyEditor() {
     const onChange = (i: number, key: string, val: any) => setEvents(prev => { const n = [...prev]; n[i] = { ...n[i], [key]: val }; return n; });
     const onRemove = (i: number) => setEvents(prev => prev.filter((_, idx) => idx !== i));
     const addEvent = () => setEvents(prev => [...prev, { year: new Date().getFullYear(), title: '', subtitle: '', description: '', type: 'education' }]);
+    const onStatChange = (i: number, key: string, val: any) => setStats(prev => { const n = [...prev]; n[i] = { ...n[i], [key]: val }; return n; });
+    const onStatRemove = (i: number) => setStats(prev => prev.filter((_, idx) => idx !== i));
+    const addStat = () => setStats(prev => [...prev, { value: '', label: '' }]);
 
     const handleDragEnd = (e: DragEndEvent) => {
         const { active, over } = e;
@@ -97,6 +128,15 @@ export default function JourneyEditor() {
             const oi = events.findIndex((_, i) => `ev-${i}` === active.id);
             const ni = events.findIndex((_, i) => `ev-${i}` === over.id);
             setEvents(arrayMove(events, oi, ni));
+        }
+    };
+
+    const handleStatDragEnd = (e: DragEndEvent) => {
+        const { active, over } = e;
+        if (over && active.id !== over.id) {
+            const oldIndex = stats.findIndex((_, i) => `stat-${i}` === active.id);
+            const newIndex = stats.findIndex((_, i) => `stat-${i}` === over.id);
+            setStats(arrayMove(stats, oldIndex, newIndex));
         }
     };
 
@@ -156,27 +196,28 @@ export default function JourneyEditor() {
 
                 {/* Experience Stats Configuration */}
                 <div className="rounded-xl bg-zinc-900/50 p-6 ring-1 ring-white/5 space-y-4">
-                    <h3 className="text-sm font-semibold text-zinc-300 border-b border-white/5 pb-2">Experience Summary Statistics</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        {stats.map((stat, i) => (
-                            <div key={i} className="space-y-2.5 p-3.5 bg-zinc-800/30 rounded-xl ring-1 ring-white/5">
-                                <FieldGroup label={`Metric ${i + 1} Value`}>
-                                    <Input value={stat.value} onChange={v => {
-                                        const n = [...stats];
-                                        n[i] = { ...n[i], value: v };
-                                        setStats(n);
-                                    }} placeholder="e.g. 18" />
-                                </FieldGroup>
-                                <FieldGroup label={`Metric ${i + 1} Label`}>
-                                    <Input value={stat.label} onChange={v => {
-                                        const n = [...stats];
-                                        n[i] = { ...n[i], label: v };
-                                        setStats(n);
-                                    }} placeholder="e.g. Years Teaching" />
-                                </FieldGroup>
-                            </div>
-                        ))}
+                    <div className="flex items-center justify-between gap-4 border-b border-white/5 pb-2">
+                        <h3 className="text-sm font-semibold text-zinc-300">Experience Summary Statistics</h3>
+                        <button onClick={addStat} className="flex items-center gap-1.5 rounded-lg bg-violet-600/20 px-3 py-1.5 text-xs font-semibold text-violet-200 ring-1 ring-violet-500/30 transition-all hover:bg-violet-600/30">
+                            <Plus size={13} /> Add Metric
+                        </button>
                     </div>
+                    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleStatDragEnd}>
+                        <SortableContext items={stats.map((_, i) => `stat-${i}`)} strategy={verticalListSortingStrategy}>
+                            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                                {stats.map((stat, i) => (
+                                    <SortableStat
+                                        key={`stat-${i}`}
+                                        id={`stat-${i}`}
+                                        stat={stat}
+                                        index={i}
+                                        onChange={onStatChange}
+                                        onRemove={onStatRemove}
+                                    />
+                                ))}
+                            </div>
+                        </SortableContext>
+                    </DndContext>
                 </div>
             </div>
 
@@ -184,7 +225,7 @@ export default function JourneyEditor() {
             <div className="border-t border-white/5 pt-6">
                 <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-sm font-semibold text-zinc-300">Timeline Events</h3>
-                    <button onClick={addEvent} className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-xs font-semibold rounded-lg ring-1 ring-blue-500/30 cursor-pointer transition-all">
+                    <button onClick={addEvent} className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-200 text-xs font-semibold rounded-lg ring-1 ring-emerald-500/30 cursor-pointer transition-all">
                         <Plus size={13} /> Add Event
                     </button>
                 </div>

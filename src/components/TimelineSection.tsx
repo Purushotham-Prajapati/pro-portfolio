@@ -1,5 +1,8 @@
 "use client";
-import { useEffect, useRef } from 'react'
+
+import type { CSSProperties } from "react";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 
 export interface TimelineEvent {
     year: number;
@@ -9,277 +12,487 @@ export interface TimelineEvent {
     type: "education" | "career" | "award" | "research" | "milestone";
 }
 
-const typeConfig: Record<TimelineEvent['type'], { color: string; label: string }> = {
-    education: { color: '#059669', label: 'Education' },
-    career: { color: '#2563EB', label: 'Career' },
-    award: { color: '#D97706', label: 'Award' },
-    research: { color: '#DC2626', label: 'Research' },
-    milestone: { color: '#0D9488', label: 'Milestone' },
-}
+const typeConfig: Record<TimelineEvent["type"], { color: string; label: string }> = {
+    education: { color: "#10B981", label: "Education" },
+    career: { color: "#2563EB", label: "Career" },
+    award: { color: "#F59E0B", label: "Award" },
+    research: { color: "#8B5CF6", label: "Research" },
+    milestone: { color: "#EC4899", label: "Milestone" },
+};
 
-const observe = (el: HTMLDivElement | null, cls: string) => {
-    if (!el) return () => { }
-    const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) { el.classList.add(cls); obs.disconnect() } },
-        { threshold: 0.1 }
-    )
-    obs.observe(el)
-    return () => obs.disconnect()
+const fallbackIntro = {
+    badge: "THE JOURNEY",
+    title_line_1: "33 Years of",
+    title_line_2: "Relentless Growth",
+    description:
+        "From a Diploma in Electronics in 1992 to leading dual DST-funded research projects in 2025 - every milestone tells a story of dedication, discovery, and impact.",
+    stats: [
+        { value: "18", label: "Years Teaching" },
+        { value: "3 yrs", label: "Industry Exp." },
+        { value: "13 yrs", label: "Research Active" },
+        { value: "8+", label: "PhD Scholars" },
+    ],
+};
+
+function TimelineDot({ color, mobile = false }: { color: string; mobile?: boolean }) {
+    const ref = useRef<HTMLDivElement>(null);
+    const active = useInView(ref, { amount: 0.75, once: false });
+
+    return (
+        <motion.div
+            ref={ref}
+            className={mobile ? "tl-dot tl-dot-mobile" : "tl-dot"}
+            style={{ "--event-color": color } as CSSProperties}
+            animate={{
+                scale: active ? 1.08 : 1,
+                boxShadow: active
+                    ? `0 0 0 ${mobile ? 7 : 8}px ${color}22, 0 0 ${mobile ? 24 : 28}px ${color}72`
+                    : `0 0 0 ${mobile ? 3 : 4}px ${color}20`,
+            }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+        >
+            <span />
+        </motion.div>
+    );
 }
 
 function TimelineCard({ event, index }: { event: TimelineEvent; index: number }) {
-    const desktopRef = useRef<HTMLDivElement>(null)
-    const mobileRef = useRef<HTMLDivElement>(null)
-    const isLeft = index % 2 === 0
-    const { color, label } = typeConfig[event.type]
-
-    useEffect(() => {
-        const c1 = observe(desktopRef.current, 'visible')
-        const c2 = observe(mobileRef.current, 'visible')
-        return () => { c1(); c2() }
-    }, [])
+    const isLeft = index % 2 === 0;
+    const { color, label } = typeConfig[event.type] || typeConfig.milestone;
 
     return (
         <>
-            {/* ── DESKTOP: alternating 3-col grid ── */}
             <div className="tl-row-desktop">
-                {/* Left col */}
-                <div
-                    ref={isLeft ? desktopRef : undefined}
-                    className={isLeft ? 'reveal-left' : ''}
-                    style={{ padding: '0 32px 64px 0', textAlign: 'right' }}
+                <motion.div
+                    initial={isLeft ? { opacity: 0, x: -48 } : false}
+                    whileInView={isLeft ? { opacity: 1, x: 0 } : undefined}
+                    viewport={{ once: true, amount: 0.28 }}
+                    transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    style={{ padding: "0 32px 64px 0", textAlign: "right" }}
                 >
                     {isLeft && <TimelineCardContent event={event} color={color} label={label} align="right" />}
-                </div>
+                </motion.div>
 
-                {/* Center: dot + year */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <div style={{
-                        width: '44px', height: '44px', borderRadius: '50%',
-                        backgroundColor: '#09090B', border: `2px solid ${color}`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        zIndex: 2, boxShadow: `0 0 0 4px ${color}20`, flexShrink: 0,
-                    }}>
-                        <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: color }} />
-                    </div>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color, letterSpacing: '0.04em', marginTop: '6px', fontFamily: 'Archivo, sans-serif' }}>
+                <div className="tl-marker">
+                    <TimelineDot color={color} />
+                    <div className="tl-year" style={{ color }}>
                         {event.year}
                     </div>
                 </div>
 
-                {/* Right col */}
-                <div
-                    ref={!isLeft ? desktopRef : undefined}
-                    className={!isLeft ? 'reveal-right' : ''}
-                    style={{ padding: '0 0 64px 32px' }}
+                <motion.div
+                    initial={!isLeft ? { opacity: 0, x: 48 } : false}
+                    whileInView={!isLeft ? { opacity: 1, x: 0 } : undefined}
+                    viewport={{ once: true, amount: 0.28 }}
+                    transition={{ duration: 0.65, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    style={{ padding: "0 0 64px 32px" }}
                 >
                     {!isLeft && <TimelineCardContent event={event} color={color} label={label} align="left" />}
-                </div>
+                </motion.div>
             </div>
 
-            {/* ── MOBILE: single-column flex ── */}
             <div className="tl-row-mobile">
-                {/* Dot + year */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0, width: '44px' }}>
-                    <div style={{
-                        width: '36px', height: '36px', borderRadius: '50%',
-                        backgroundColor: '#09090B', border: `2px solid ${color}`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        zIndex: 2, boxShadow: `0 0 0 3px ${color}20`,
-                    }}>
-                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: color }} />
-                    </div>
-                    <div style={{ fontSize: '10px', fontWeight: 700, color, letterSpacing: '0.04em', marginTop: '5px', fontFamily: 'Archivo, sans-serif', textAlign: 'center' }}>
+                <div className="tl-marker tl-marker-mobile">
+                    <TimelineDot color={color} mobile />
+                    <div className="tl-year tl-year-mobile" style={{ color }}>
                         {event.year}
                     </div>
                 </div>
 
-                {/* Card */}
-                <div ref={mobileRef} className="reveal" style={{ flex: 1, paddingBottom: '36px' }}>
+                <motion.div
+                    initial={{ opacity: 0, y: 28 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.22 }}
+                    transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    style={{ flex: 1, paddingBottom: "36px" }}
+                >
                     <TimelineCardContent event={event} color={color} label={label} align="left" />
-                </div>
+                </motion.div>
             </div>
         </>
-    )
+    );
 }
 
-function TimelineCardContent({ event, color, label, align }: {
-    event: TimelineEvent; color: string; label: string; align: 'left' | 'right'
+function TimelineCardContent({
+    event,
+    color,
+    label,
+    align,
+}: {
+    event: TimelineEvent;
+    color: string;
+    label: string;
+    align: "left" | "right";
 }) {
     return (
-        <div
-            style={{
-                backgroundColor: '#111114', border: '1px solid #27272A',
-                padding: '24px',
-                transition: 'border-color 0.2s ease, transform 0.2s ease',
-                cursor: 'default',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.borderColor = color; e.currentTarget.style.transform = 'translateY(-2px)' }}
-            onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#27272A'; e.currentTarget.style.transform = 'translateY(0)' }}
+        <motion.div
+            className="tl-card"
+            style={{ "--event-color": color, textAlign: align } as CSSProperties}
+            whileHover={{ scale: 1.02, y: -4 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
         >
-            <span style={{
-                display: 'inline-block', fontSize: '10px', fontWeight: 600,
-                letterSpacing: '0.12em', textTransform: 'uppercase', color,
-                marginBottom: '10px', border: `1px solid ${color}40`,
-                padding: '2px 8px', backgroundColor: `${color}12`,
-            }}>
-                {label}
-            </span>
-            <h3 style={{
-                fontFamily: 'Archivo, sans-serif', fontSize: '16px', fontWeight: 700,
-                color: '#FAFAFA', margin: '0 0 6px', lineHeight: 1.3, textAlign: align,
-            }}>
-                {event.title}
-            </h3>
-            <div style={{ fontSize: '12px', color, fontWeight: 500, marginBottom: '10px', textAlign: align }}>
-                {event.subtitle}
-            </div>
-            <p style={{ fontSize: '13px', color: '#71717A', margin: 0, lineHeight: 1.65, textAlign: align }}>
-                {event.description}
-            </p>
-        </div>
-    )
+            <span className="tl-card-label">{label}</span>
+            <h3>{event.title}</h3>
+            <div className="tl-card-subtitle">{event.subtitle}</div>
+            <p>{event.description}</p>
+        </motion.div>
+    );
 }
 
 export default function TimelineSection({ data }: { data: any }) {
-    const headerRef = useRef<HTMLDivElement>(null)
-
-    useEffect(() => { return observe(headerRef.current, 'visible') }, [])
-
-    const events = data?.timeline_events || []
-    const intro = data?.journey_intro || {
-        badge: "THE JOURNEY",
-        title_line_1: "33 Years of",
-        title_line_2: "Relentless Growth",
-        description: "From a Diploma in Electronics in 1992 to leading dual DST-funded research projects in 2025 — every milestone tells a story of dedication, discovery, and impact.",
-        stats: [
-            { value: "18", label: "Years Teaching" },
-            { value: "3 yrs", label: "Industry Exp." },
-            { value: "13 yrs", label: "Research Active" },
-            { value: "8+", label: "PhD Scholars" }
-        ]
-    }
+    const events = data?.timeline_events || [];
+    const intro = {
+        ...fallbackIntro,
+        ...(data?.journey_intro || {}),
+        stats: data?.journey_intro?.stats?.length ? data.journey_intro.stats : fallbackIntro.stats,
+    };
 
     return (
-        <section id="journey" style={{ backgroundColor: '#09090B', padding: 'clamp(100px, 12vw, 140px) clamp(16px, 4vw, 24px) clamp(60px, 8vw, 120px)' }}>
-            <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-
-                {/* Header */}
-                <div ref={headerRef} className="reveal" style={{ textAlign: 'left', marginBottom: '80px' }}>
-                    <span style={{ fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#3B82F6', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif' }}>
-                        — {intro.badge || 'THE JOURNEY'}
-                    </span>
-                    <h2 style={{
-                        fontFamily: 'Archivo, sans-serif', fontWeight: 800,
-                        fontSize: 'clamp(32px, 5vw, 56px)', lineHeight: 1.1,
-                        letterSpacing: '-0.02em', color: '#FAFAFA', margin: '12px 0 16px',
-                    }}>
-                        {intro.title_line_1 || '33 Years of'}<br />
-                        <span style={{
-                            background: 'linear-gradient(135deg, #3B82F6 0%, #10B981 100%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            display: 'inline-block'
-                        }}>{intro.title_line_2 || 'Relentless Growth'}</span>
+        <section id="journey" className="journey-section page-theme-journey">
+            <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.35 }}
+                    transition={{ duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    style={{ textAlign: "left", marginBottom: "80px" }}
+                >
+                    <span className="journey-badge">- {intro.badge || fallbackIntro.badge}</span>
+                    <h2 className="journey-title">
+                        {intro.title_line_1 || fallbackIntro.title_line_1}
+                        <br />
+                        <span>{intro.title_line_2 || fallbackIntro.title_line_2}</span>
                     </h2>
-                    <p style={{ fontSize: '15px', color: '#71717A', maxWidth: '680px', margin: '0 0 32px 0', lineHeight: 1.7 }}>
-                        {intro.description || 'From a Diploma in 1992 to twin DST-funded research projects in 2025 — every milestone tells a story.'}
-                    </p>
+                    <p className="journey-description">{intro.description || fallbackIntro.description}</p>
 
-                    {/* Stats Row */}
-                    {intro.stats && intro.stats.length > 0 && (
-                        <div style={{
-                            display: 'flex',
-                            gap: '32px',
-                            alignItems: 'center',
-                            flexWrap: 'wrap',
-                            borderTop: '1px solid #27272A',
-                            paddingTop: '32px'
-                        }}>
-                            {intro.stats.map((stat: any, i: number) => (
-                                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
-                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                        <span style={{
-                                            fontFamily: 'Archivo, sans-serif',
-                                            fontSize: '28px',
-                                            fontWeight: 800,
-                                            color: '#FAFAFA',
-                                            lineHeight: 1
-                                        }}>
-                                            {stat.value}
-                                        </span>
-                                        <span style={{
-                                            fontSize: '12px',
-                                            color: '#71717A',
-                                            marginTop: '6px',
-                                            fontWeight: 500
-                                        }}>
-                                            {stat.label}
-                                        </span>
+                    {intro.stats.length > 0 && (
+                        <div className="journey-stats">
+                            {intro.stats.map((stat: any, index: number) => (
+                                <div key={`${stat.value}-${stat.label}-${index}`} className="journey-stat">
+                                    <div>
+                                        <span>{stat.value}</span>
+                                        <small>{stat.label}</small>
                                     </div>
-                                    {i < intro.stats.length - 1 && (
-                                        <div style={{
-                                            width: '1px',
-                                            height: '36px',
-                                            backgroundColor: '#27272A',
-                                            display: 'block'
-                                        }} className="stats-divider" />
-                                    )}
+                                    {index < intro.stats.length - 1 && <div className="stats-divider" />}
                                 </div>
                             ))}
                         </div>
                     )}
-                </div>
+                </motion.div>
 
-                {/* Timeline wrapper */}
-                <div style={{ position: 'relative' }}>
-                    {/* Desktop: vertical centre line */}
-                    <div className="tl-center-line" style={{
-                        position: 'absolute', left: '50%', top: 0, bottom: 0,
-                        transform: 'translateX(-50%)', width: '1px',
-                        background: 'linear-gradient(to bottom, transparent, #2563EB 5%, #2563EB 95%, transparent)',
-                        zIndex: 1,
-                    }} />
+                <div style={{ position: "relative" }}>
+                    <div className="tl-center-line" />
+                    <div className="tl-left-line" />
 
-                    {/* Mobile: left-edge line */}
-                    <div className="tl-left-line" style={{
-                        position: 'absolute', left: '18px', top: 0, bottom: 0,
-                        width: '1px',
-                        background: 'linear-gradient(to bottom, transparent, #2563EB 5%, #2563EB 95%, transparent)',
-                        zIndex: 1,
-                    }} />
-
-                    {(events || []).map((event: TimelineEvent, index: number) => (
-                        <TimelineCard key={event.year + event.title} event={event} index={index} />
+                    {events.map((event: TimelineEvent, index: number) => (
+                        <TimelineCard key={`${event.year}-${event.title}-${index}`} event={event} index={index} />
                     ))}
                 </div>
             </div>
 
             <style>{`
-                /* Desktop layout */
+                .journey-section {
+                    --journey-bg: radial-gradient(circle at 18% 10%, rgba(139, 92, 246, 0.22), transparent 28%),
+                        radial-gradient(circle at 82% 18%, rgba(16, 185, 129, 0.18), transparent 24%),
+                        linear-gradient(135deg, #f7f3ff 0%, #ffffff 44%, #eefdf8 100%);
+                    --journey-card-bg: rgba(255, 255, 255, 0.74);
+                    --journey-card-border: rgba(99, 102, 241, 0.18);
+                    --journey-heading: #17141f;
+                    --journey-muted: #5f6170;
+                    --journey-dot-bg: rgba(255, 255, 255, 0.9);
+                    --journey-stat-border: rgba(99, 102, 241, 0.2);
+                    --journey-line-gradient: linear-gradient(to bottom, transparent, #8B5CF6 20%, #2563EB 50%, #10B981 80%, transparent);
+                    background: var(--journey-bg);
+                    color: var(--journey-heading);
+                    overflow: hidden;
+                    padding: clamp(100px, 12vw, 140px) clamp(16px, 4vw, 24px) clamp(60px, 8vw, 120px);
+                }
+
+                html.dark .journey-section {
+                    --journey-bg: radial-gradient(circle at 18% 10%, rgba(139, 92, 246, 0.2), transparent 28%),
+                        radial-gradient(circle at 82% 18%, rgba(16, 185, 129, 0.16), transparent 26%),
+                        linear-gradient(135deg, #09090B 0%, #0d0a16 48%, #06110f 100%);
+                    --journey-card-bg: rgba(17, 17, 20, 0.72);
+                    --journey-card-border: rgba(255, 255, 255, 0.1);
+                    --journey-heading: #FAFAFA;
+                    --journey-muted: #A1A1AA;
+                    --journey-dot-bg: #09090B;
+                    --journey-stat-border: rgba(255, 255, 255, 0.1);
+                }
+
+                .journey-badge {
+                    color: #8B5CF6;
+                    font-family: 'Space Grotesk', sans-serif;
+                    font-size: 11px;
+                    font-weight: 700;
+                    letter-spacing: 0.2em;
+                    text-transform: uppercase;
+                }
+
+                .journey-title {
+                    color: var(--journey-heading);
+                    font-family: 'Archivo', sans-serif;
+                    font-size: clamp(32px, 5vw, 56px);
+                    font-weight: 800;
+                    line-height: 1.1;
+                    margin: 12px 0 16px;
+                }
+
+                .journey-title span {
+                    background: linear-gradient(135deg, #E11D48 0%, #EA580C 48%, #F59E0B 100%);
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    color: transparent;
+                    display: inline-block;
+                }
+
+                .journey-description {
+                    color: var(--journey-muted);
+                    font-size: 15px;
+                    line-height: 1.7;
+                    margin: 0 0 32px;
+                    max-width: 680px;
+                }
+
+                .journey-stats {
+                    align-items: stretch;
+                    border-top: 1px solid var(--journey-stat-border);
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 18px 32px;
+                    padding-top: 32px;
+                }
+
+                .journey-stat {
+                    align-items: center;
+                    display: flex;
+                    gap: 32px;
+                }
+
+                .journey-stat span {
+                    color: var(--journey-heading);
+                    display: block;
+                    font-family: 'Archivo', sans-serif;
+                    font-size: 28px;
+                    font-weight: 800;
+                    line-height: 1;
+                }
+
+                .journey-stat small {
+                    color: var(--journey-muted);
+                    display: block;
+                    font-size: 12px;
+                    font-weight: 600;
+                    margin-top: 6px;
+                }
+
+                .stats-divider {
+                    background: var(--journey-stat-border);
+                    display: block;
+                    height: 36px;
+                    width: 1px;
+                }
+
+                .tl-center-line {
+                    background: var(--journey-line-gradient);
+                    bottom: 0;
+                    display: block;
+                    left: 50%;
+                    position: absolute;
+                    top: 0;
+                    transform: translateX(-50%);
+                    width: 1px;
+                    z-index: 1;
+                }
+
+                .tl-left-line {
+                    background: var(--journey-line-gradient);
+                    bottom: 0;
+                    display: none;
+                    left: 18px;
+                    position: absolute;
+                    top: 0;
+                    width: 1px;
+                    z-index: 1;
+                }
+
                 .tl-row-desktop {
+                    align-items: start;
                     display: grid;
                     grid-template-columns: 1fr 60px 1fr;
-                    align-items: start;
                     position: relative;
                 }
-                .tl-row-mobile  { display: none; }
-                .tl-center-line { display: block; }
-                .tl-left-line   { display: none; }
+
+                .tl-row-mobile {
+                    display: none;
+                }
+
+                .tl-marker {
+                    align-items: center;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .tl-dot {
+                    align-items: center;
+                    background: var(--journey-dot-bg);
+                    border: 2px solid var(--event-color);
+                    border-radius: 999px;
+                    display: flex;
+                    flex-shrink: 0;
+                    height: 44px;
+                    justify-content: center;
+                    position: relative;
+                    width: 44px;
+                    z-index: 2;
+                }
+
+                .tl-dot::after {
+                    animation: tl-pulse 1.8s ease-out infinite;
+                    border: 1px solid var(--event-color);
+                    border-radius: inherit;
+                    content: "";
+                    inset: -8px;
+                    opacity: 0.22;
+                    position: absolute;
+                }
+
+                .tl-dot span {
+                    background: var(--event-color);
+                    border-radius: 999px;
+                    height: 10px;
+                    width: 10px;
+                }
+
+                .tl-year {
+                    font-family: 'Archivo', sans-serif;
+                    font-size: 11px;
+                    font-weight: 800;
+                    letter-spacing: 0.04em;
+                    margin-top: 6px;
+                }
+
+                .tl-card {
+                    backdrop-filter: blur(18px);
+                    background: var(--journey-card-bg);
+                    border: 1px solid var(--journey-card-border);
+                    box-shadow: 0 18px 48px rgba(17, 24, 39, 0.08);
+                    cursor: default;
+                    padding: 24px;
+                    transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+                }
+
+                .tl-card:hover {
+                    border-color: var(--event-color);
+                    box-shadow: 0 22px 70px color-mix(in srgb, var(--event-color) 34%, transparent);
+                }
+
+                .tl-card-label {
+                    background: color-mix(in srgb, var(--event-color) 12%, transparent);
+                    border: 1px solid color-mix(in srgb, var(--event-color) 36%, transparent);
+                    color: var(--event-color);
+                    display: inline-block;
+                    font-size: 10px;
+                    font-weight: 700;
+                    letter-spacing: 0.12em;
+                    margin-bottom: 10px;
+                    padding: 3px 9px;
+                    text-transform: uppercase;
+                }
+
+                .tl-card h3 {
+                    color: var(--journey-heading);
+                    font-family: 'Archivo', sans-serif;
+                    font-size: 16px;
+                    font-weight: 750;
+                    line-height: 1.3;
+                    margin: 0 0 6px;
+                }
+
+                .tl-card-subtitle {
+                    color: var(--event-color);
+                    font-size: 12px;
+                    font-weight: 700;
+                    margin-bottom: 10px;
+                }
+
+                .tl-card p {
+                    color: var(--journey-muted);
+                    font-size: 13px;
+                    line-height: 1.65;
+                    margin: 0;
+                }
+
+                @keyframes tl-pulse {
+                    0% { opacity: 0.28; transform: scale(0.7); }
+                    100% { opacity: 0; transform: scale(1.55); }
+                }
 
                 @media (max-width: 700px) {
-                    .tl-row-desktop { display: none; }
-                    .tl-center-line { display: none; }
+                    .journey-section {
+                        padding-top: 96px;
+                    }
+
+                    .journey-stats {
+                        display: grid;
+                        gap: 14px;
+                        grid-template-columns: repeat(2, minmax(0, 1fr));
+                    }
+
+                    .journey-stat {
+                        align-items: flex-start;
+                        border: 1px solid var(--journey-stat-border);
+                        display: block;
+                        padding: 14px;
+                    }
+
+                    .stats-divider {
+                        display: none;
+                    }
+
+                    .tl-row-desktop,
+                    .tl-center-line {
+                        display: none;
+                    }
 
                     .tl-row-mobile {
-                        display: flex;
                         align-items: flex-start;
+                        display: flex;
                         gap: 14px;
                         position: relative;
                     }
-                    .tl-left-line { display: block; }
+
+                    .tl-left-line {
+                        display: block;
+                    }
+
+                    .tl-marker-mobile {
+                        flex-shrink: 0;
+                        width: 44px;
+                    }
+
+                    .tl-dot-mobile {
+                        height: 36px;
+                        width: 36px;
+                    }
+
+                    .tl-dot-mobile span {
+                        height: 8px;
+                        width: 8px;
+                    }
+
+                    .tl-year-mobile {
+                        font-size: 10px;
+                        margin-top: 5px;
+                        text-align: center;
+                    }
+
+                    .tl-card {
+                        padding: 18px;
+                        text-align: left !important;
+                    }
                 }
             `}</style>
         </section>
-    )
+    );
 }

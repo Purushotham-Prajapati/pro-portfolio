@@ -334,10 +334,10 @@ html.dark {
 }
 
 .page-theme-journey {
-  --theme-accent: 160 84% 32%;
-  --theme-accent-2: 92 25% 55%;
-  --theme-soft: 118 28% 89%;
-  --theme-shadow: 0 22px 60px hsla(160, 70%, 28%, 0.2);
+  --theme-accent: 258 90% 66%;
+  --theme-accent-2: 160 84% 39%;
+  --theme-soft: 252 100% 94%;
+  --theme-shadow: 0 22px 60px hsla(258, 90%, 62%, 0.2);
 }
 
 .page-theme-research,

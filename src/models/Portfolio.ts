@@ -61,10 +61,46 @@ const LayoutBlockSchema = new Schema(
     { _id: false }
 );
 
+const JourneyStatSchema = new Schema(
+    {
+        value: { type: String, default: '' },
+        label: { type: String, default: '' },
+    },
+    { _id: true }
+);
+
+const JourneyIntroSchema = new Schema(
+    {
+        badge: { type: String, default: 'THE JOURNEY' },
+        title_line_1: { type: String, default: '33 Years of' },
+        title_line_2: { type: String, default: 'Relentless Growth' },
+        description: { type: String, default: '' },
+        stats: { type: [JourneyStatSchema], default: [] },
+    },
+    { _id: false }
+);
+
+const TimelineEventSchema = new Schema(
+    {
+        year: { type: Number, required: true },
+        title: { type: String, required: true },
+        subtitle: { type: String, default: '' },
+        description: { type: String, default: '' },
+        type: {
+            type: String,
+            enum: ['education', 'career', 'award', 'research', 'milestone'],
+            default: 'education',
+        },
+    },
+    { _id: true }
+);
+
 const PortfolioSchema: Schema = new Schema(
     {
         activities: { type: [ActivityCategorySchema], default: [] },
         layout_config: { type: [LayoutBlockSchema], default: [] },
+        journey_intro: { type: JourneyIntroSchema, default: () => ({}) },
+        timeline_events: { type: [TimelineEventSchema], default: [] },
     },
     {
         timestamps: true,
