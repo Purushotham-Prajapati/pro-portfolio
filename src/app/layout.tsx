@@ -1,5 +1,7 @@
 import './globals.css'
 import NavbarWrapper from '../components/NavbarWrapper'
+import { ThemeProvider } from '../components/shared/ThemeContext'
+import LenisProvider from '../components/shared/LenisProvider'
 
 import type { Metadata, Viewport } from 'next'
 
@@ -59,8 +61,22 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const themeScript = `
+    (function() {
+      try {
+        var key = 'madhubala-theme';
+        var stored = localStorage.getItem(key);
+        var cookie = document.cookie.match(new RegExp('(?:^|; )' + key + '=([^;]*)'));
+        var saved = stored || (cookie && cookie[1]);
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var theme = saved || (prefersDark ? 'dark' : 'light');
+        document.documentElement.classList.toggle('dark', theme === 'dark');
+      } catch (error) {}
+    })();
+  `;
+
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* title="Dr. M. Madhu Bala | Professor of Computer Science" */}
         {/* name="description" */}
@@ -68,10 +84,15 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body>
-        <NavbarWrapper />
-        {children}
+        <ThemeProvider>
+          <LenisProvider>
+            <NavbarWrapper />
+            {children}
+          </LenisProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

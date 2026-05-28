@@ -1,103 +1,198 @@
-# Dr. M. Madhu Bala - Academic Portfolio
+# Dr. M. Madhu Bala Academic Portfolio
 
-A modern, high-performance academic portfolio and content management system for Dr. M. Madhu Bala. Built from the ground up using **Next.js 16 (App Router)** and **TypeScript**, showcasing 21+ years of academic excellence, research publications, and technological milestones.
+A database-driven academic portfolio and lightweight CMS for Dr. M. Madhu Bala. The public site presents academic profile content, research impact, awards, teaching work, contact details, and timeline milestones, while the protected admin area lets editors manage portfolio data, navigation, page blocks, settings, and media.
 
----
+## Features
 
-## 🚀 Features
+- Public academic portfolio pages for Home, Journey, Research, Awards, Teaching, and Contact.
+- MongoDB-backed portfolio data with a flexible `Portfolio` schema for profile, research, awards, navigation, SEO, and media fields.
+- Dynamic page system using editable block types: `HERO`, `TIMELINE`, `GRID`, `RICH_TEXT`, and `LIST`.
+- Protected admin dashboard under `/admin/dashboard` with sections for personal info, about, journey, research, awards, teaching, contact, navigation, content, media, and settings.
+- JWT cookie authentication for admin routes, with password hashes stored in MongoDB.
+- ImageKit integration for media uploads, delivery, thumbnails, and deletion.
+- Route handlers for portfolio updates, page CRUD, media management, ImageKit auth, login/logout, auth settings, and cache revalidation.
+- Route-level loading states and reusable skeleton/admin UI components.
+- TypeScript-first Next.js App Router implementation.
 
-- **Blazing Fast Performance**: Leverages Next.js server-side rendering (SSR) and React Server Components for optimal load times.
-- **Dynamic Content Management (CMS)**: Features a robust, custom-built Admin Dashboard tailored for academia. Administrators can dynamically edit Awards, Journey timelines, Contact info, Teaching schedules, and Research publications.
-- **Media Optimization**: Integrated with **ImageKit** for on-the-fly image optimization and delivery, tightly coupled with a MongoDB metadata layer.
-- **Advanced SEO**: Out-of-the-box Search Engine Optimization with Next.js Metadata, rich OpenGraph tags, Twitter Cards, and canonical URLs.
-- **Responsive Aesthetics**: A beautiful, custom UI designed with pure CSS inline architectures and `lucide-react` icons. Fully responsive across all desktop, tablet, and mobile breakpoints.
-- **Seamless Loading States**: Employs mathematically precise skeleton loaders specific to individual route layouts (e.g., timeline skeletons for the Journey page, grid skeletons for Awards), eliminating layout shift.
+## Tech Stack
 
-## 🛠️ Technology Stack
+- Next.js 16 with App Router
+- React 18
+- TypeScript
+- MongoDB and Mongoose
+- JWT authentication with `jose`
+- Password hashing with `bcryptjs`
+- ImageKit media storage and delivery
+- Tiptap rich text editing
+- dnd-kit drag and drop
+- Lucide React icons
+- Tailwind CSS 4/PostCSS
 
-- **Framework:** Next.js 16 (App Router)
-- **Language:** TypeScript
-- **Database:** MongoDB & Mongoose
-- **Authentication:** Custom JWT-based Admin Auth (using `jose` and `jsonwebtoken`)
-- **Media Storage & Delivery:** ImageKit
-- **Rich Text Editor:** Tiptap
-- **Icons:** Lucide React
-- **Drag & Drop:** dnd-kit
-
----
-
-## 🏗️ Project Structure
+## Project Structure
 
 ```text
-├── src/
-│   ├── app/
-│   │   ├── (public pages)  # journey, research, awards, contact, teaching routes
-│   │   ├── admin/          # Secure admin dashboard and CMS views
-│   │   ├── api/            # Next.js Route Handlers (auth, media, pages, portfolio)
-│   │   └── loading.tsx     # Specialized route-level skeleton loaders
-│   ├── components/         # Reusable UI components (HeroSection, Navbar, Skeletons)
-│   ├── hooks/              # Custom React hooks (useCountUp, useScrollReveal)
-│   ├── lib/                # Core utilities (db.ts, auth.ts)
-│   └── models/             # Mongoose schemas (Portfolio.ts)
-└── public/                 # Static assets
+.
+|-- src/
+|   |-- app/
+|   |   |-- page.tsx                 # Home page
+|   |   |-- journey/                 # Public journey timeline page
+|   |   |-- research/                # Public research page
+|   |   |-- awards/                  # Public awards page
+|   |   |-- teaching/                # Public teaching page
+|   |   |-- contact/                 # Public contact page
+|   |   |-- [slug]/                  # Dynamic CMS-managed pages
+|   |   |-- admin/                   # Admin login and dashboard
+|   |   |-- api/                     # Route handlers
+|   |   `-- globals.css
+|   |-- components/                  # Public UI sections and shared admin components
+|   |-- hooks/                       # UI hooks
+|   |-- lib/                         # Database, auth, and data helpers
+|   |-- models/                      # Mongoose models
+|   `-- scripts/                     # Database seed scripts
+|-- design-system/                   # Admin panel design notes
+|-- portfolio.json                   # Legacy/source portfolio data for page seeding
+|-- package.json
+`-- README.md
 ```
 
-## ⚙️ Local Development
+## Public Routes
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Home hero and about sections from the portfolio record |
+| `/journey` | Education, career, awards, and research timeline |
+| `/research` | Research metrics, interests, projects, and publications |
+| `/awards` | Awards and recognition |
+| `/teaching` | Teaching and academic leadership content |
+| `/contact` | Academic profiles and contact information |
+| `/:slug` | Published dynamic page rendered from CMS blocks |
+
+## Admin Routes
+
+| Route | Purpose |
+| --- | --- |
+| `/admin/login` | Admin sign-in |
+| `/admin/dashboard` | Dashboard metrics |
+| `/admin/dashboard/personal` | Personal profile details |
+| `/admin/dashboard/about` | About section content |
+| `/admin/dashboard/journey` | Timeline and journey content |
+| `/admin/dashboard/research` | Research content |
+| `/admin/dashboard/awards` | Awards content |
+| `/admin/dashboard/teaching` | Teaching content |
+| `/admin/dashboard/contact` | Contact content |
+| `/admin/dashboard/navigation` | Navigation items |
+| `/admin/dashboard/content` | CMS page block editing |
+| `/admin/dashboard/media` | ImageKit media management |
+| `/admin/dashboard/settings` | Site/admin settings |
+
+## API Routes
+
+| Route | Methods | Purpose |
+| --- | --- | --- |
+| `/api/portfolio` | `GET`, `PUT`, `PATCH` | Read or update the main portfolio document |
+| `/api/pages` | `GET`, `POST` | List pages or create a new CMS page |
+| `/api/pages/[slug]` | `GET`, `PUT`, `DELETE` | Read, update, or delete a CMS page |
+| `/api/media` | `GET`, `POST`, `DELETE` | Manage authenticated media uploads and records |
+| `/api/imagekit/auth` | `GET` | Generate ImageKit client auth parameters |
+| `/api/auth/login` | `POST` | Authenticate an admin and set the auth cookie |
+| `/api/auth/logout` | `POST` | Clear the auth cookie |
+| `/api/auth/settings` | varies | Admin settings/auth utilities |
+| `/api/revalidate` | `POST` | Revalidate cached portfolio content with a secret |
+
+## Getting Started
 
 ### Prerequisites
-- Node.js (v18 or higher)
-- MongoDB Cluster (or local instance)
-- ImageKit Account
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/Purushotham-Prajapati/pro-portfolio.git
-cd pro-portfolio
-```
+- Node.js 20 or newer
+- npm
+- MongoDB connection string
+- ImageKit account for media uploads
 
-### 2. Install dependencies
+### Install Dependencies
+
 ```bash
 npm install
 ```
 
-### 3. Environment Configuration
-Create a `.env.local` file in the root directory and configure the following variables:
+### Environment Variables
+
+Create `.env.local` in the project root:
 
 ```env
-# Database
 MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=replace_with_a_long_random_secret
 
-# Authentication
-JWT_SECRET=your_super_secret_jwt_key
-
-# ImageKit Configuration
 IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
 IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
-IMAGEKIT_URL_ENDPOINT=your_imagekit_url_endpoint
+IMAGEKIT_URL_ENDPOINT=https://ik.imagekit.io/your_imagekit_id
+
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+REVALIDATE_SECRET=replace_with_a_random_revalidation_secret
 ```
 
-### 4. Run the Development Server
+`MONGODB_URI`, `JWT_SECRET`, and the ImageKit values are required for the full app. `NEXT_PUBLIC_BASE_URL` is used by the shared portfolio fetcher, and `REVALIDATE_SECRET` protects `/api/revalidate`.
+
+### Seed Data
+
+Seed the portfolio document:
+
+```bash
+npx tsx src/scripts/seedPortfolio.ts
+```
+
+Seed CMS pages from `portfolio.json`:
+
+```bash
+npx tsx src/scripts/seedPages.ts
+```
+
+Create the initial admin user:
+
+```bash
+npx tsx src/scripts/seedAdmin.ts
+```
+
+The admin seed creates `admin` / `password123` if no admin exists. Change this password immediately after first setup or replace it with a stronger seeded credential before deployment.
+
+### Run Locally
+
 ```bash
 npm run dev
 ```
-Navigate to `http://localhost:3000` to view the application.
 
-### 5. Accessing the Admin Panel
-Navigate to `http://localhost:3000/admin/login` to access the Content Management System. You must configure your admin credentials directly in the database or via your initial seeding script.
+Open `http://localhost:3000` for the public site and `http://localhost:3000/admin/login` for the CMS.
 
----
+## Available Scripts
 
-## 📈 Deployment
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Next.js development server |
+| `npm run build` | Build the production application |
+| `npm run start` | Start the production server after building |
+| `npm run lint` | Run TypeScript type checking with `tsc --noEmit` |
 
-This project is optimized for deployment on **Vercel**. 
-1. Connect the GitHub repository to your Vercel account.
-2. Ensure the Framework Preset is set to **Next.js**.
-3. Add your Environment Variables in the Vercel project settings.
-4. Deploy!
+## Data Model Overview
 
-*(Note: Legacy configurations like `vercel.json` routing rules have been intentionally removed to allow Vercel to auto-detect the Next.js App Router environment).*
+- `Portfolio`: flexible portfolio document with sections for profile details, education, research interests, technical skills, publications, funded projects, awards, roles, teaching subjects, timeline events, contact details, navigation, site metadata, dynamic sections, and media.
+- `Page`: CMS page model with `slug`, `title`, `isPublished`, and ordered content blocks.
+- `Admin`: admin user model with `username`, `passwordHash`, and role.
 
----
+## Deployment
 
-## 📄 License
-This project is proprietary and confidential. All content related to Dr. M. Madhu Bala is strictly protected.
+The app is designed for Vercel or any Node-compatible Next.js host.
+
+1. Provision MongoDB and ImageKit.
+2. Add all required environment variables to the deployment platform.
+3. Build with `npm run build`.
+4. Run the seed scripts against the production database when initializing the site.
+5. Deploy the Next.js app.
+
+For Vercel, use the Next.js framework preset and configure the environment variables in the project settings.
+
+## Notes
+
+- Admin pages are protected by `src/middleware.ts`; `/admin/login` remains public.
+- Public pages currently read directly from MongoDB and are marked dynamic where needed.
+- Uploaded media is stored in ImageKit, while file metadata is kept in the portfolio document.
+- `next.config.mjs` allows optimized images from `ik.imagekit.io`.
+- This repository is private/proprietary and does not include an open-source license.

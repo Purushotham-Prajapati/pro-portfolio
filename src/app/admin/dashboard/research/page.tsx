@@ -5,6 +5,8 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEn
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { SkeletonSection, SaveBar, SectionHeader, FieldGroup, Input } from '../../../../components/shared/AdminUI';
+import ActivityAdminPanel from '../../../../components/shared/ActivityAdminPanel';
+import { ActivityCategory } from '../../../../components/public/ActivityTabs';
 
 function SortableProject({ id, project, index, onChange, onRemove }: any) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
@@ -36,6 +38,7 @@ function SortableProject({ id, project, index, onChange, onRemove }: any) {
 export default function ResearchEditor() {
     const [projects, setProjects] = useState<any[]>([]);
     const [pubs, setPubs] = useState<any>({});
+    const [activities, setActivities] = useState<ActivityCategory[]>([]);
     const [introBadge, setIntroBadge] = useState('RESEARCH & PUBLICATIONS');
     const [introLine1, setIntroLine1] = useState('A Decade of');
     const [introLine2, setIntroLine2] = useState('Measurable Impact');
@@ -50,6 +53,7 @@ export default function ResearchEditor() {
             .then(d => {
                 setProjects(d.major_research_projects || []);
                 setPubs(d.publications || {});
+                setActivities(d.activities || []);
                 if (d.research_intro) {
                     setIntroBadge(d.research_intro.badge || 'RESEARCH & PUBLICATIONS');
                     setIntroLine1(d.research_intro.title_line_1 || '');
@@ -77,6 +81,7 @@ export default function ResearchEditor() {
         try {
             await fetch('/api/portfolio', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ section: 'major_research_projects', data: projects }) });
             await fetch('/api/portfolio', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ section: 'publications', data: pubs }) });
+            await fetch('/api/portfolio', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ section: 'activities', data: activities }) });
             await fetch('/api/portfolio', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
@@ -127,7 +132,7 @@ export default function ResearchEditor() {
             {/* Projects */}
             <div className="mb-4 flex items-center justify-between">
                 <h3 className="text-sm font-semibold text-zinc-300">Funded Projects</h3>
-                <button onClick={addProject} className="flex items-center gap-1 text-xs px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 rounded-lg ring-1 ring-blue-500/30 cursor-pointer"><Plus size={13} /> Add Project</button>
+                <button onClick={addProject} className="flex items-center gap-1 text-xs px-3 py-1.5 bg-amber-600/20 hover:bg-amber-600/30 text-amber-200 rounded-lg ring-1 ring-amber-500/30 cursor-pointer"><Plus size={13} /> Add Project</button>
             </div>
             <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                 <SortableContext items={projects.map((_, i) => `proj-${i}`)} strategy={verticalListSortingStrategy}>
@@ -136,6 +141,9 @@ export default function ResearchEditor() {
                     </div>
                 </SortableContext>
             </DndContext>
+            <div className="mt-6">
+                <ActivityAdminPanel activities={activities} onChange={setActivities} />
+            </div>
             <SaveBar saving={saving} message={message} onSave={save} />
         </div>
     );

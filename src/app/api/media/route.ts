@@ -59,7 +59,17 @@ export async function DELETE(req: Request) {
         }
 
         await connectDB();
-        await Portfolio.updateOne({}, { $pull: { media: { fileId } } });
+        const portfolio = await Portfolio.findOne().lean() as any;
+        const update: any = { $pull: { media: { fileId } } };
+
+        if (portfolio?.personal_info?.profile_image_file_id === fileId) {
+            update.$unset = {
+                'personal_info.profile_image_url': '',
+                'personal_info.profile_image_file_id': '',
+            };
+        }
+
+        await Portfolio.updateOne({}, update);
 
         return NextResponse.json({ success: true, message: 'File deleted successfully' });
     } catch (error: any) {
@@ -105,7 +115,16 @@ export async function POST(req: Request) {
         };
 
         await connectDB();
-        await Portfolio.updateOne({}, { $push: { media: newMedia } }, { upsert: true });
+        const update: any = { $push: { media: newMedia } };
+
+        if ((file.name || '').startsWith('profile-avatar')) {
+            update.$set = {
+                'personal_info.profile_image_url': uploadResponse.url,
+                'personal_info.profile_image_file_id': uploadResponse.fileId,
+            };
+        }
+
+        await Portfolio.updateOne({}, update, { upsert: true });
 
         return NextResponse.json({
             success: true,
@@ -116,4 +135,3 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: error.message || 'Failed to upload media file' }, { status: 500 });
     }
 }
-
